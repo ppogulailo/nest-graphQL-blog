@@ -4,7 +4,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { UsersModule } from "./users/users.module";
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '../.env' }),
@@ -18,18 +19,19 @@ import { UsersModule } from "./users/users.module";
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         type: 'postgres',
-        host: config.get('TYPE_ORM_HOST'),
-        port: config.get('TYPE_ORM_PORT'),
-        username: config.get('TYPE_ORM_USERNAME'),
-        password: config.get('TYPE_ORM_PASS'),
-        database: config.get('TYPE_ORM_DATABASE'),
+        host: 'localhost',
+        port: 5432,
+        username: 'postgres',
+        password: 'root',
+        database: 'postgres',
         entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
         autoLoadEntities: true,
         synchronize: true,
         logging: true,
       }),
     }),
-    UsersModule
+    UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

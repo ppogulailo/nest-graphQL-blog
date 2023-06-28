@@ -14,9 +14,9 @@ enum Roles {
 @ObjectType()
 @Entity('users')
 export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
-  @Field(() => String, { description: 'id of the user' })
-  userId: string;
+  @Field(() => ID)
+  @PrimaryGeneratedColumn()
+  id: number;
   @Field()
   @CreateDateColumn()
   createdAt: Date;
@@ -35,7 +35,4 @@ export class UserEntity {
   @Column()
   @Field(() => String, { description: 'email of the user' })
   email: string;
-  @Column({ nullable: true })
-  @Field(() => Roles, { description: 'role of the user' })
-  role: Roles;
 }

@@ -14,12 +14,12 @@ export class UserResolver {
   }
 
   @Mutation(() => Number)
-  async removeUser(@Args('id') id: string): Promise<string> {
+  async removeUser(@Args('id') id: number): Promise<number> {
     return await this.userService.removeUser(id);
   }
 
   @Query(() => UserEntity)
-  async getOneUser(@Args('id') id: string): Promise<UserEntity> {
+  async getOneUser(@Args('id') id: number): Promise<UserEntity> {
     return await this.userService.getOneUser(id);
   }
 
