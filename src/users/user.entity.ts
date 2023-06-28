@@ -5,31 +5,37 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+enum Roles {
+  Moderator,
+  Writer,
+}
 
 @ObjectType()
 @Entity('users')
 export class UserEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
-
+  @PrimaryGeneratedColumn('uuid')
+  @Field(() => String, { description: 'id of the user' })
+  userId: string;
   @Field()
   @CreateDateColumn()
   createdAt: Date;
-
   @Field()
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @Field()
-  @Column()
-  email: string;
-
-  @Field({ nullable: true })
-  @Column({ nullable: true })
-  name: string;
   @Field()
   @Column({ select: false })
   password: string;
+  @Column()
+  @Field(() => String, { description: 'first name of the user' })
+  firstName: string;
+  @Column()
+  @Field(() => String, { description: 'last name of the user' })
+  lastName: string;
+  @Column()
+  @Field(() => String, { description: 'email of the user' })
+  email: string;
+  @Column({ nullable: true })
+  @Field(() => Roles, { description: 'role of the user' })
+  role: Roles;
 }

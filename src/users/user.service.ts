@@ -16,10 +16,10 @@ export class UserService {
     return await this.userRepository.save({ ...createUserInput });
   }
 
-  async getOneUser(id: number) {
+  async getOneUser(id: string) {
     return await this.userRepository.findOne({
       where: {
-        id: id,
+        userId: id,
       },
     });
   }
@@ -30,12 +30,13 @@ export class UserService {
         email: email,
       },
       select: {
-        id: true,
+        userId: true,
         password: true,
         createdAt: true,
         updatedAt: true,
         email: true,
-        name: true,
+        firstName: true,
+        lastName: true,
       },
     });
   }
@@ -44,14 +45,14 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  async removeUser(id: number): Promise<number> {
-    await this.userRepository.delete({ id });
+  async removeUser(id: string): Promise<string> {
+    await this.userRepository.delete({ userId: id });
     return id;
   }
 
   async updateUser(updateUserInput: UpdateUserInput): Promise<UserEntity> {
     await this.userRepository.update(
-      { id: updateUserInput.id },
+      { userId: updateUserInput.id },
       { ...updateUserInput },
     );
     return await this.getOneUser(updateUserInput.id);
