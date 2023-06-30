@@ -34,17 +34,21 @@ export class AuthService {
       ...userData,
       password: hash,
     });
-
-    const { accessToken, refreshToken } = await this.getTokens(
-      newUser.id,
-      newUser.email,
-    );
-    await this.updateRefreshToken(newUser.id, refreshToken);
-    return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      user: newUser,
-    };
+    try {
+      const { accessToken, refreshToken } = await this.getTokens(
+        newUser.id,
+        newUser.email,
+      );
+      await this.updateRefreshToken(newUser.id, refreshToken);
+      console.log(accessToken,refreshToken,newUser)
+      return {
+        access_token: accessToken,
+        refresh_token: refreshToken,
+        user: newUser,
+      };
+    }catch (e){
+      console.log(e)
+    }
   }
 
   async signIn(data: LoginInput): Promise<LoginResponse> {

@@ -14,6 +14,9 @@ import { LoginInput } from './inputs/login.input';
 import { LoginResponse, RefreshResponse } from './dto/login.response';
 import { RefreshInput } from './inputs/refresh.input';
 import { CustomAuthGuard } from './guards/accessToken.guard';
+import { HasRoles } from "./decorators/roles.decorator";
+import { Roles } from "../users/user.entity";
+import { RolesGuard } from "./guards/roles.guard";
 
 @Resolver('auth')
 export class AuthResolver {

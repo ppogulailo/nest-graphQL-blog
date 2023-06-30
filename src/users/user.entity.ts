@@ -6,9 +6,10 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-enum Roles {
-  Moderator,
-  Writer,
+
+export enum Roles {
+  Moderator = 'Moderator',
+  Writer = 'Writer',
 }
 
 @ObjectType()
@@ -38,4 +39,7 @@ export class UserEntity {
   @Column({ nullable: true })
   @Field(() => String, { description: 'refreshToken of the user' })
   refreshToken?: string;
+  @Column({ default: Roles.Writer })
+  @Field(() => String, { description: 'email of the user' })
+  role: Roles;
 }
