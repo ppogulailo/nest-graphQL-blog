@@ -21,11 +21,13 @@ input LoginInput {
 
 type LoginResponse {
   access_token: String!
+  refresh_token: String!
   user: UserEntity!
 }
 
 type Mutation {
   login(login: LoginInput!): LoginResponse!
+  refreshToken(refresh: RefreshInput!): LoginResponse!
   removeUser(id: Float!): Float!
   signup(createUserDto: CreateUserInput!): LoginResponse!
   updateUser(updateUser: UpdateUserInput!): UserEntity!
@@ -36,10 +38,15 @@ type Query {
   getOneUser(id: Float!): UserEntity!
 }
 
+input RefreshInput {
+  access_token: String!
+  id: Float!
+  refresh_token: String!
+}
+
 input UpdateUserInput {
-  email: String
   id: ID!
-  name: String
+  refreshToken: String
 }
 
 type UserEntity {
@@ -55,5 +62,8 @@ type UserEntity {
   """last name of the user"""
   lastName: String!
   password: String!
+
+  """refreshToken of the user"""
+  refreshToken: String!
   updatedAt: DateTime!
 }

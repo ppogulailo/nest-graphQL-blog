@@ -4,8 +4,10 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { UserService } from 'src/users/user.service';
 import { AuthService } from '../auth.service';
+import { USER_NOT_AUTHORIZE } from '../const/auth.const';
 
 @Injectable()
 export class CustomAuthGuard extends AuthGuard('jwt') {
@@ -17,13 +19,11 @@ export class CustomAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // custom logic can go here
-    // this is necessary due to possibly returning `boolean | Promise<boolean> | Observable<boolean>
-    // custom logic goes here too
     try {
-      const req = context.switchToHttp().getRequest();
+      const gqlContext = GqlExecutionContext.create(context);
+      const { req } = gqlContext.getContext();
       const decodedToken = await this.authService.verifyUser(
-        req.cookies.jwt.tokens.accessToken,
+        req.body.variables.refreshToken.access_token,
       );
       // make sure that the user is not deleted, or that props or rights changed compared to the time when the jwt was issued
       const user = await this.userService.getOneUser(decodedToken.id);
@@ -33,10 +33,10 @@ export class CustomAuthGuard extends AuthGuard('jwt') {
         req.user = user;
         return true;
       } else {
-        throw new UnauthorizedException('User is not auth');
+        throw new UnauthorizedException(USER_NOT_AUTHORIZE);
       }
     } catch (e) {
-      throw new UnauthorizedException('User is not auth');
+      throw new UnauthorizedException(USER_NOT_AUTHORIZE);
     }
   }
 }

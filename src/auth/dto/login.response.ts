@@ -7,4 +7,15 @@ export class LoginResponse {
   access_token: string;
   @Field(() => UserEntity)
   user: UserEntity;
+  @Field()
+  refresh_token: string;
+}
+@ObjectType()
+export class RefreshResponse {
+  @Field()
+  access_token: string;
+  @Field()
+  refresh_token: string;
+  @Field()
+  id: number;
 }

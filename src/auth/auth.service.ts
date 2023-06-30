@@ -11,7 +11,8 @@ import { UserService } from 'src/users/user.service';
 import { UserEntity } from 'src/users/user.entity';
 import { LoginInput } from './inputs/login.input';
 import { CreateUserInput } from '../users/inputs /create-user.input';
-import { LoginResponse } from './dto/login.response';
+import { LoginResponse, RefreshResponse } from './dto/login.response';
+import { ACCESS_DENIED } from './const/auth.const';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,6 @@ export class AuthService {
   ) {}
 
   async signUp(userData: CreateUserInput): Promise<LoginResponse> {
-    console.log(userData, 'userDatta');
     const userExists = await this.usersService.getOneWhereEmail(userData.email);
     if (userExists) {
       throw new BadRequestException('User is already exist!');
@@ -35,10 +35,14 @@ export class AuthService {
       password: hash,
     });
 
-    const token = await this.getToken(newUser.id, newUser.email);
-    console.log(token);
+    const { accessToken, refreshToken } = await this.getTokens(
+      newUser.id,
+      newUser.email,
+    );
+    await this.updateRefreshToken(newUser.id, refreshToken);
     return {
-      access_token: token,
+      access_token: accessToken,
+      refresh_token: refreshToken,
       user: newUser,
     };
   }
@@ -50,17 +54,31 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-    console.log(user);
-    console.log(data.password);
     const passwordMatches = await argon2.verify(user.password, data.password);
     if (!passwordMatches) {
       throw new UnauthorizedException('password is wrong!');
     }
-    const token = await this.getToken(user.id, user.email);
+    const { accessToken, refreshToken } = await this.getTokens(
+      user.id,
+      user.email,
+    );
+    await this.updateRefreshToken(user.id, refreshToken);
     return {
-      access_token: token,
+      access_token: accessToken,
+      refresh_token: refreshToken,
       user: user,
     };
+  }
+
+  async updateRefreshToken(
+    userId: number,
+    refreshToken: string,
+  ): Promise<void> {
+    const hashedRefreshToken = await argon2.hash(refreshToken);
+    await this.usersService.updateUser({
+      id: userId,
+      refreshToken: hashedRefreshToken,
+    });
   }
 
   async hashData(data: string): Promise<string> {
@@ -74,16 +92,59 @@ export class AuthService {
     return verify;
   }
 
-  async getToken(userId: number, email: string): Promise<string> {
-    return this.jwtService.signAsync(
-      {
-        id: userId,
-        email,
-      },
-      {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: '5d',
-      },
+  async refreshTokens(
+    userId: number,
+    refreshToken: string,
+  ): Promise<RefreshResponse> {
+    const user = await this.usersService.getOneUser(userId);
+    if (!user) {
+      throw new ForbiddenException(ACCESS_DENIED);
+    }
+    const refreshTokenMatches = await argon2.verify(
+      user.refreshToken,
+      refreshToken,
     );
+    if (!refreshTokenMatches) {
+      throw new ForbiddenException(ACCESS_DENIED);
+    }
+    const tokens = await this.getTokens(user.id, user.email);
+    return {
+      access_token: tokens.accessToken,
+      refresh_token: tokens.refreshToken,
+      id: user.id,
+    };
+  }
+
+  async getTokens(
+    userId: number,
+    email: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          id: userId,
+          email,
+        },
+        {
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+          expiresIn: '3d',
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          id: userId,
+          email,
+        },
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: '30d',
+        },
+      ),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 }

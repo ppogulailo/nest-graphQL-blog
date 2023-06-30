@@ -6,8 +6,5 @@ export class UpdateUserInput {
   id: number;
 
   @Field({ nullable: true })
-  email: string;
-
-  @Field({ nullable: true })
-  name: string;
+  refreshToken: string;
 }

@@ -35,4 +35,7 @@ export class UserEntity {
   @Column()
   @Field(() => String, { description: 'email of the user' })
   email: string;
+  @Column({ nullable: true })
+  @Field(() => String, { description: 'refreshToken of the user' })
+  refreshToken?: string;
 }
