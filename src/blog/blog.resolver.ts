@@ -4,11 +4,11 @@ import { BlogEntity } from './blog.entity';
 import { CreateBlogInput } from './inputs/create-blog.input';
 import { UpdateBlogInput } from './inputs/update-blog.input';
 import { UseGuards } from '@nestjs/common';
-import { IsCreatorGuard } from '../auth/guards/is-creator.guard';
+import { IsCreatorGuard } from '../common/guards/is-creator.guard';
 import {
   CurrentService,
   ServiceType,
-} from '../auth/decorators/services.decoratir';
+} from '../common/decorators/services.decoratir';
 
 @Resolver('Blog')
 export class BlogResolver {

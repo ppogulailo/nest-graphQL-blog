@@ -10,7 +10,7 @@ import * as process from 'process';
 import { BlogModule } from './blog/blog.module';
 import { BlogPostModule } from './blog-post/blog-post.module';
 import { APP_GUARD } from '@nestjs/core';
-import { graphqlContextGetToken } from './auth/guards/auth.guard';
+import { graphqlContextGetToken } from './common/guards/auth.guard';
 import { UserService } from "./users/user.service";
 
 @Module({
