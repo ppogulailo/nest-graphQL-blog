@@ -6,6 +6,7 @@ import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
+import * as process from 'process';
 
 @Module({
   imports: [
@@ -24,11 +25,11 @@ import { Module } from '@nestjs/common';
       inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         type: 'postgres',
-        host: 'localhost',
+        host: process.env.TYPE_ORM_HOST,
         port: 5432,
-        username: 'postgres',
-        password: 'root',
-        database: 'postgres',
+        username: process.env.TYPE_ORM_USERNAME,
+        password: process.env.TYPE_ORM_PASS,
+        database: process.env.TYPE_ORM_DATABASE,
         entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
         autoLoadEntities: true,
         synchronize: true,
