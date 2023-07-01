@@ -22,7 +22,7 @@ input LoginInput {
 type LoginResponse {
   access_token: String!
   refresh_token: String!
-  user: UserEntity!
+  user: BlogEntity!
 }
 
 type Mutation {
@@ -30,12 +30,12 @@ type Mutation {
   refreshToken(refresh: RefreshInput!): LoginResponse!
   removeUser(id: Float!): Float!
   signup(createUserDto: CreateUserInput!): LoginResponse!
-  updateUser(updateUser: UpdateUserInput!): UserEntity!
+  updateUser(updateUser: UpdateUserInput!): BlogEntity!
 }
 
 type Query {
-  getAllUsers: [UserEntity!]!
-  getOneUser(id: Float!): UserEntity!
+  getAllUsers: [BlogEntity!]!
+  getOneUser(id: Float!): BlogEntity!
 }
 
 input RefreshInput {
@@ -49,7 +49,7 @@ input UpdateUserInput {
   refreshToken: String
 }
 
-type UserEntity {
+type BlogEntity {
   createdAt: DateTime!
 
   """email of the user"""

@@ -4,8 +4,10 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { BlogEntity } from '../blog/blog.entity';
 
 export enum Roles {
   Moderator = 'Moderator',
@@ -42,4 +44,7 @@ export class UserEntity {
   @Column({ default: Roles.Writer })
   @Field(() => String, { description: 'email of the user' })
   role: Roles;
+  @OneToMany(() => BlogEntity, (blog) => blog.user)
+  @Field(() => [BlogEntity], { nullable: true })
+  blogs?: BlogEntity[];
 }
