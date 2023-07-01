@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
-import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from 'src/users/user.module';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AccessTokenStrategy } from './strategies/accessToken.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { AuthResolver } from './auth.resolver';
@@ -12,11 +12,17 @@ import { UserEntity } from '../users/user.entity';
 @Module({
   imports: [
     JwtModule.register({}),
-    UsersModule,
+    UserModule,
     ConfigModule,
     TypeOrmModule.forFeature([UserEntity]),
   ],
-  providers: [AuthService, AccessTokenStrategy, UserService, AuthResolver],
-  exports: [AuthService],
+  providers: [
+    AuthService,
+    AccessTokenStrategy,
+    UserService,
+    AuthResolver,
+    JwtService,
+  ],
+  exports: [AuthService, JwtService],
 })
 export class AuthModule {}

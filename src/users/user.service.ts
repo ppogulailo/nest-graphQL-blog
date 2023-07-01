@@ -12,11 +12,11 @@ export class UserService {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(createUserInput: CreateUserInput): Promise<UserEntity> {
+  async create(createUserInput: CreateUserInput): Promise<UserEntity> {
     return await this.userRepository.save({ ...createUserInput });
   }
 
-  async getOneUser(id: number) {
+  async findById(id: number) {
     return await this.userRepository.findOne({
       where: {
         id: id,
@@ -24,7 +24,7 @@ export class UserService {
     });
   }
 
-  async getOneWhereEmail(email: string) {
+  async findByEmail(email: string) {
     return await this.userRepository.findOne({
       where: {
         email: email,
@@ -41,20 +41,20 @@ export class UserService {
     });
   }
 
-  async getAllUsers(): Promise<UserEntity[]> {
+  async findMany(): Promise<UserEntity[]> {
     return await this.userRepository.find({ relations: ['blogs'] });
   }
 
-  async removeUser(id: number): Promise<number> {
+  async removeById(id: number): Promise<number> {
     await this.userRepository.delete({ id: id });
     return id;
   }
 
-  async updateUser(updateUserInput: UpdateUserInput): Promise<UserEntity> {
+  async updateById(updateUserInput: UpdateUserInput): Promise<UserEntity> {
     await this.userRepository.update(
       { id: updateUserInput.id },
       { ...updateUserInput },
     );
-    return await this.getOneUser(updateUserInput.id);
+    return await this.findById(updateUserInput.id);
   }
 }

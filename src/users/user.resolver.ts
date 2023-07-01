@@ -10,21 +10,21 @@ export class UserResolver {
   async updateUser(
     @Args('updateUser') updateUserInput: UpdateUserInput,
   ): Promise<UserEntity> {
-    return await this.userService.updateUser(updateUserInput);
+    return await this.userService.updateById(updateUserInput);
   }
 
   @Mutation(() => Number)
   async removeUser(@Args('id') id: number): Promise<number> {
-    return await this.userService.removeUser(id);
+    return await this.userService.removeById(id);
   }
 
   @Query(() => UserEntity)
   async getOneUser(@Args('id') id: number): Promise<UserEntity> {
-    return await this.userService.getOneUser(id);
+    return await this.userService.findById(id);
   }
 
   @Query(() => [UserEntity])
   async getAllUsers(): Promise<UserEntity[]> {
-    return await this.userService.getAllUsers();
+    return await this.userService.findMany();
   }
 }

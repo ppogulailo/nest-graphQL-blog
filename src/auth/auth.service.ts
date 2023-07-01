@@ -23,14 +23,14 @@ export class AuthService {
   ) {}
 
   async signUp(userData: CreateUserInput): Promise<LoginResponse> {
-    const userExists = await this.usersService.getOneWhereEmail(userData.email);
+    const userExists = await this.usersService.findByEmail(userData.email);
     if (userExists) {
       throw new BadRequestException('User is already exist!');
     }
 
     // Hash password
     const hash = await this.hashData(userData.password);
-    const newUser = await this.usersService.createUser({
+    const newUser = await this.usersService.create({
       ...userData,
       password: hash,
     });
@@ -54,7 +54,7 @@ export class AuthService {
   async signIn(data: LoginInput): Promise<LoginResponse> {
     console.log(data);
     // Check if user exists
-    const user = await this.usersService.getOneWhereEmail(data.email);
+    const user = await this.usersService.findByEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -79,7 +79,7 @@ export class AuthService {
     refreshToken: string,
   ): Promise<void> {
     const hashedRefreshToken = await argon2.hash(refreshToken);
-    await this.usersService.updateUser({
+    await this.usersService.updateById({
       id: userId,
       refreshToken: hashedRefreshToken,
     });
@@ -100,7 +100,7 @@ export class AuthService {
     userId: number,
     refreshToken: string,
   ): Promise<RefreshResponse> {
-    const user = await this.usersService.getOneUser(userId);
+    const user = await this.usersService.findById(userId);
     if (!user) {
       throw new ForbiddenException(ACCESS_DENIED);
     }
