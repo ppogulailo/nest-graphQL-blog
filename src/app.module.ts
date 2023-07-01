@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { Module } from '@nestjs/common';
 import * as process from 'process';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import * as process from 'process';
     }),
     UsersModule,
     AuthModule,
+    BlogModule,
   ],
 })
 export class AppModule {}

@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type BlogEntity {
+  createdAt: DateTime!
+  id: ID!
+
+  """name of the blog"""
+  name: String!
+  updatedAt: DateTime!
+  user: UserEntity!
+}
+
+input CreateBlogInput {
+  name: String!
+  userId: Float!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String
@@ -22,20 +37,22 @@ input LoginInput {
 type LoginResponse {
   access_token: String!
   refresh_token: String!
-  user: BlogEntity!
+  user: UserEntity!
 }
 
 type Mutation {
+  createBlog(createBlog: CreateBlogInput!): BlogEntity!
   login(login: LoginInput!): LoginResponse!
   refreshToken(refresh: RefreshInput!): LoginResponse!
   removeUser(id: Float!): Float!
   signup(createUserDto: CreateUserInput!): LoginResponse!
-  updateUser(updateUser: UpdateUserInput!): BlogEntity!
+  updateUser(updateUser: UpdateUserInput!): UserEntity!
 }
 
 type Query {
-  getAllUsers: [BlogEntity!]!
-  getOneUser(id: Float!): BlogEntity!
+  getAllBlogs: [BlogEntity!]!
+  getAllUsers: [UserEntity!]!
+  getOneUser(id: Float!): UserEntity!
 }
 
 input RefreshInput {
@@ -49,7 +66,8 @@ input UpdateUserInput {
   refreshToken: String
 }
 
-type BlogEntity {
+type UserEntity {
+  blogs: [BlogEntity!]
   createdAt: DateTime!
 
   """email of the user"""

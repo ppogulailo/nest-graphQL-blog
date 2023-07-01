@@ -42,7 +42,7 @@ export class UserService {
   }
 
   async getAllUsers(): Promise<UserEntity[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({ relations: ['blogs'] });
   }
 
   async removeUser(id: number): Promise<number> {

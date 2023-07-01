@@ -21,6 +21,9 @@ export class BlogEntity {
   @Field()
   @UpdateDateColumn()
   updatedAt: Date;
+  @Column()
+  @Field(() => String, { description: 'name of the blog' })
+  name: string;
   @ManyToOne(() => UserEntity, (user) => user.blogs, { cascade: true })
   @Field(() => UserEntity)
   user: UserEntity;
