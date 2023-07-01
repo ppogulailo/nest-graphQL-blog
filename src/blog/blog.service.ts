@@ -5,6 +5,7 @@ import { BlogEntity } from './blog.entity';
 import { CreateBlogInput } from './inputs/create-blog.input';
 import { UpdateBlogInput } from './inputs/update-blog.input';
 import { UserService } from '../users/user.service';
+import { FetchBlogInput } from './inputs/fetch-blog.input';
 
 @Injectable()
 export class BlogService {
@@ -28,8 +29,23 @@ export class BlogService {
     });
   }
 
-  async findMany(): Promise<BlogEntity[]> {
-    return await this.blogRepository.find({ relations: ['user'] });
+  async findMany({
+    take,
+    skip,
+    title,
+    dateSort,
+  }: FetchBlogInput): Promise<BlogEntity[]> {
+    return await this.blogRepository.find({
+      where: {
+        name: title,
+      },
+      order: {
+        createdAt: dateSort,
+      },
+      relations: ['user'],
+      take: take,
+      skip: skip,
+    });
   }
 
   async removeById(id: number): Promise<number> {
