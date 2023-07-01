@@ -12,6 +12,7 @@ import {
   CurrentService,
   ServiceType,
 } from '../common/decorators/services.decoratir';
+import { FetchBlogPostInput } from './inputs/fetch-blog-post.input';
 
 @Resolver('Blog-Post')
 export class BlogPostResolver {
@@ -25,8 +26,10 @@ export class BlogPostResolver {
   }
 
   @Query(() => [BlogPostEntity])
-  async getAllBlogPosts(): Promise<BlogPostEntity[]> {
-    return await this.blogPostService.findMany();
+  async getAllBlogPosts(
+    @Args() args: FetchBlogPostInput,
+  ): Promise<BlogPostEntity[]> {
+    return await this.blogPostService.findMany(args);
   }
   @UseGuards(IsCreatorGuard)
   @CurrentService(ServiceType.blogPostService)

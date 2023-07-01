@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from "typeorm";
 import { BlogPostEntity } from './blog-post.entity';
 import { CreateBlogPostInput } from './inputs/create-blog-post.input';
 import { UpdateBlogPostInput } from './inputs/update-blog-post.input';
 import { UserService } from '../users/user.service';
 import { BlogService } from '../blog/blog.service';
+import { FetchBlogPostInput } from './inputs/fetch-blog-post.input';
 
 @Injectable()
 export class BlogPostService {
@@ -31,15 +32,34 @@ export class BlogPostService {
 
   async findById(id: number) {
     return await this.blogPostRepository.findOne({
-      relations:['user'],
+      relations: ['user'],
       where: {
         id: id,
       },
     });
   }
 
-  async findMany(): Promise<BlogPostEntity[]> {
-    return await this.blogPostRepository.find({ relations: ['user', 'blog'] });
+  async findMany({
+    take,
+    skip,
+    title,
+    dateSort,
+    id,
+  }: FetchBlogPostInput): Promise<BlogPostEntity[]> {
+    return await this.blogPostRepository.find({
+      where: {
+        title: Like(`%${title}%`),
+        blog: {
+          id,
+        },
+      },
+      order: {
+        createdAt: dateSort,
+      },
+      relations: ['user', 'blog'],
+      take: take,
+      skip: skip,
+    });
   }
 
   async removeById(id: number): Promise<number> {
