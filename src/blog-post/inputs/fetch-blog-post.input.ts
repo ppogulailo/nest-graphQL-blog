@@ -10,13 +10,14 @@ export class FetchBlogPostInput {
   @Field(() => Int)
   @Min(0)
   skip = 0;
-
   @Field(() => Int)
   @Min(1)
   @Max(50)
   take = 25;
   @Field(() => String)
   title = '';
+  @Field(() => Number)
+  id;
   @Field(() => DateSort)
   dateSort = DateSort.Asc;
 }

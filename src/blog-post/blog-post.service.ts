@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from "typeorm";
 import { BlogPostEntity } from './blog-post.entity';
 import { CreateBlogPostInput } from './inputs/create-blog-post.input';
 import { UpdateBlogPostInput } from './inputs/update-blog-post.input';
@@ -44,10 +44,14 @@ export class BlogPostService {
     skip,
     title,
     dateSort,
+    id,
   }: FetchBlogPostInput): Promise<BlogPostEntity[]> {
     return await this.blogPostRepository.find({
       where: {
-        title,
+        title: Like(`%${title}%`),
+        blog: {
+          id,
+        },
       },
       order: {
         createdAt: dateSort,

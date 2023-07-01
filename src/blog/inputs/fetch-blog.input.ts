@@ -10,7 +10,8 @@ export class FetchBlogInput {
   @Field(() => Int)
   @Min(0)
   skip = 0;
-
+  @Field(() => Number)
+  id;
   @Field(() => Int)
   @Min(1)
   @Max(50)
