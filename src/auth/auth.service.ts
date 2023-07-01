@@ -11,7 +11,7 @@ import { UserService } from 'src/users/user.service';
 import { UserEntity } from 'src/users/user.entity';
 import { LoginInput } from './inputs/login.input';
 import { CreateUserInput } from '../users/inputs /create-user.input';
-import { LoginResponse, RefreshResponse } from './dto/login.response';
+import { LoginResponse, RefreshResponse } from './response/login.response';
 import { ACCESS_DENIED } from './const/auth.const';
 
 @Injectable()
@@ -23,38 +23,32 @@ export class AuthService {
   ) {}
 
   async signUp(userData: CreateUserInput): Promise<LoginResponse> {
-    const userExists = await this.usersService.getOneWhereEmail(userData.email);
+    const userExists = await this.usersService.findByEmail(userData.email);
     if (userExists) {
       throw new BadRequestException('User is already exist!');
     }
 
     // Hash password
     const hash = await this.hashData(userData.password);
-    const newUser = await this.usersService.createUser({
+    const newUser = await this.usersService.create({
       ...userData,
       password: hash,
     });
-    try {
-      const { accessToken, refreshToken } = await this.getTokens(
-        newUser.id,
-        newUser.email,
-      );
-      await this.updateRefreshToken(newUser.id, refreshToken);
-      console.log(accessToken,refreshToken,newUser)
-      return {
-        access_token: accessToken,
-        refresh_token: refreshToken,
-        user: newUser,
-      };
-    }catch (e){
-      console.log(e)
-    }
+    const { accessToken, refreshToken } = await this.getTokens(
+      newUser.id,
+      newUser.email,
+    );
+    await this.updateRefreshToken(newUser.id, refreshToken);
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      user: newUser,
+    };
   }
 
   async signIn(data: LoginInput): Promise<LoginResponse> {
-    console.log(data);
     // Check if user exists
-    const user = await this.usersService.getOneWhereEmail(data.email);
+    const user = await this.usersService.findByEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
@@ -79,7 +73,7 @@ export class AuthService {
     refreshToken: string,
   ): Promise<void> {
     const hashedRefreshToken = await argon2.hash(refreshToken);
-    await this.usersService.updateUser({
+    await this.usersService.updateById({
       id: userId,
       refreshToken: hashedRefreshToken,
     });
@@ -100,7 +94,7 @@ export class AuthService {
     userId: number,
     refreshToken: string,
   ): Promise<RefreshResponse> {
-    const user = await this.usersService.getOneUser(userId);
+    const user = await this.usersService.findById(userId);
     if (!user) {
       throw new ForbiddenException(ACCESS_DENIED);
     }

@@ -8,9 +8,9 @@ import {
 } from '@nestjs/graphql';
 import { CreateUserInput } from '../users/inputs /create-user.input';
 import { LoginInput } from './inputs/login.input';
-import { LoginResponse, RefreshResponse } from './dto/login.response';
+import { LoginResponse, RefreshResponse } from './response/login.response';
 import { RefreshInput } from './inputs/refresh.input';
-import { IsPublic } from "./decorators/public.decorator";
+import { IsPublic } from '../common/decorators/public.decorator';
 
 @Resolver('auth')
 export class AuthResolver {

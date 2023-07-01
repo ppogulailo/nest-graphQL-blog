@@ -6,8 +6,8 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { UserService } from 'src/users/user.service';
-import { AuthService } from '../auth.service';
-import { USER_NOT_AUTHORIZE } from '../const/auth.const';
+import { AuthService } from '../../auth/auth.service';
+import { USER_NOT_AUTHORIZE } from '../../auth/const/auth.const';
 
 @Injectable()
 export class CustomAuthGuard extends AuthGuard('jwt') {
@@ -26,7 +26,7 @@ export class CustomAuthGuard extends AuthGuard('jwt') {
         req.body.variables.refreshToken.access_token,
       );
       // make sure that the user is not deleted, or that props or rights changed compared to the time when the jwt was issued
-      const user = await this.userService.getOneUser(decodedToken.id);
+      const user = await this.userService.findById(decodedToken.id);
       if (user) {
         // add the user to our req object, so that we can access it later when we need it
         // if it would be here, we would like overwrite

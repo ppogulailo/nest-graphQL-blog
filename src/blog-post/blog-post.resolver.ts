@@ -3,7 +3,15 @@ import { BlogPostService } from './blog-post.service';
 import { BlogPostEntity } from './blog-post.entity';
 import { CreateBlogPostInput } from './inputs/create-blog-post.input';
 import { UpdateBlogPostInput } from './inputs/update-blog-post.input';
-import { IsPublic } from '../auth/decorators/public.decorator';
+import { IsPublic } from '../common/decorators/public.decorator';
+import { HasRoles } from '../common/decorators/roles.decorator';
+import { Roles } from '../users/user.entity';
+import { SetMetadata, UseGuards } from '@nestjs/common';
+import { IsCreatorGuard } from '../common/guards/is-creator.guard';
+import {
+  CurrentService,
+  ServiceType,
+} from '../common/decorators/services.decoratir';
 
 @Resolver('Blog-Post')
 export class BlogPostResolver {
@@ -13,28 +21,30 @@ export class BlogPostResolver {
   async createBlogPost(
     @Args('createBlogPost') createBlogInput: CreateBlogPostInput,
   ): Promise<BlogPostEntity> {
-    return await this.blogPostService.createBlogPost(createBlogInput);
+    return await this.blogPostService.create(createBlogInput);
   }
 
   @Query(() => [BlogPostEntity])
   async getAllBlogPosts(): Promise<BlogPostEntity[]> {
-    return await this.blogPostService.getAllBlogPosts();
+    return await this.blogPostService.findMany();
   }
-
+  @UseGuards(IsCreatorGuard)
+  @CurrentService(ServiceType.blogPostService)
   @Mutation(() => BlogPostEntity)
   async updateBlogPost(
     @Args('updateBlogPost') updateBlogInput: UpdateBlogPostInput,
   ): Promise<BlogPostEntity> {
-    return await this.blogPostService.updateBlogPost(updateBlogInput);
+    return await this.blogPostService.updateById(updateBlogInput);
   }
-
+  @UseGuards(IsCreatorGuard)
+  @CurrentService(ServiceType.blogPostService)
   @Mutation(() => Number)
   async removeBlogPost(@Args('id') id: number): Promise<number> {
-    return await this.blogPostService.removeBlogPost(id);
+    return await this.blogPostService.removeById(id);
   }
 
   @Query(() => BlogPostEntity)
   async getOneBlockPost(@Args('id') id: number): Promise<BlogPostEntity> {
-    return await this.blogPostService.getOneBlogPost(id);
+    return await this.blogPostService.findById(id);
   }
 }

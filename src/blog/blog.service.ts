@@ -14,16 +14,13 @@ export class BlogService {
     private readonly userService: UserService,
   ) {}
 
-  async createBlog(createBlogInput: CreateBlogInput): Promise<BlogEntity> {
-    console.log(createBlogInput);
-    const user = await this.userService.getOneUser(createBlogInput.userId); // Замените 'userId' на поле, которое содержит идентификатор пользователя в createBlogInput
-    console.log(user);
+  async create(createBlogInput: CreateBlogInput): Promise<BlogEntity> {
+    const user = await this.userService.findById(createBlogInput.userId); // Замените 'userId' на поле, которое содержит идентификатор пользователя в createBlogInput
     const blog = this.blogRepository.create({ ...createBlogInput, user: user });
-    console.log(blog)
     return await this.blogRepository.save(blog);
   }
 
-  async getOneBlog(id: number) {
+  async findById(id: number) {
     return await this.blogRepository.findOne({
       where: {
         id: id,
@@ -31,20 +28,20 @@ export class BlogService {
     });
   }
 
-  async getAllBlogs(): Promise<BlogEntity[]> {
+  async findMany(): Promise<BlogEntity[]> {
     return await this.blogRepository.find({ relations: ['user'] });
   }
 
-  async removeBlog(id: number): Promise<number> {
+  async removeById(id: number): Promise<number> {
     await this.blogRepository.delete({ id: id });
     return id;
   }
 
-  async updateBlog(updateBlogInput: UpdateBlogInput): Promise<BlogEntity> {
+  async updateById(updateBlogInput: UpdateBlogInput): Promise<BlogEntity> {
     await this.blogRepository.update(
       { id: updateBlogInput.id },
       { ...updateBlogInput },
     );
-    return await this.getOneBlog(updateBlogInput.id);
+    return await this.findById(updateBlogInput.id);
   }
 }
