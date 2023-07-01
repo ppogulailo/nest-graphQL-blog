@@ -5,15 +5,14 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   ManyToOne,
-  OneToMany,
 } from 'typeorm';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { UserEntity } from '../users/user.entity';
-import { BlogPostEntity } from '../blog-post/blog-post.entity';
+import { BlogEntity } from "../blog/blog.entity";
 
 @ObjectType()
-@Entity('blog')
-export class BlogEntity {
+@Entity('blog-post')
+export class BlogPostEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,12 +23,15 @@ export class BlogEntity {
   @UpdateDateColumn()
   updatedAt: Date;
   @Column()
-  @Field(() => String, { description: 'name of the blog' })
-  name: string;
-  @ManyToOne(() => UserEntity, (user) => user.blogs, { cascade: true })
+  @Field(() => String, { description: 'title of the blog-post' })
+  title: string;
+  @Column()
+  @Field(() => String, { description: 'message of the blog-post' })
+  message: string;
+  @ManyToOne(() => UserEntity, (user) => user.blogPost, { cascade: true })
   @Field(() => UserEntity)
   user: UserEntity;
-  @OneToMany(() => BlogPostEntity, (blogPost) => blogPost.blog)
-  @Field(() => [BlogPostEntity], { nullable: true })
-  blogPost?: BlogPostEntity[];
+  @ManyToOne(() => BlogEntity, (blog) => blog.blogPost, { cascade: true })
+  @Field(() => BlogEntity)
+  blog: BlogEntity;
 }
