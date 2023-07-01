@@ -1,6 +1,3 @@
-import {
-  UseGuards,
-} from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import {
   Args,
@@ -13,15 +10,12 @@ import { CreateUserInput } from '../users/inputs /create-user.input';
 import { LoginInput } from './inputs/login.input';
 import { LoginResponse, RefreshResponse } from './dto/login.response';
 import { RefreshInput } from './inputs/refresh.input';
-import { CustomAuthGuard } from './guards/accessToken.guard';
-import { HasRoles } from "./decorators/roles.decorator";
-import { Roles } from "../users/user.entity";
-import { RolesGuard } from "./guards/roles.guard";
+import { IsPublic } from "./decorators/public.decorator";
 
 @Resolver('auth')
 export class AuthResolver {
   constructor(private authService: AuthService) {}
-
+  @IsPublic()
   @Mutation(() => LoginResponse)
   async signup(
     @Context() context: GraphQLExecutionContext,
@@ -29,12 +23,12 @@ export class AuthResolver {
   ): Promise<LoginResponse> {
     return this.authService.signUp(createUserDto);
   }
-
+  @IsPublic()
   @Mutation(() => LoginResponse)
   async login(@Args('login') login: LoginInput): Promise<LoginResponse> {
     return await this.authService.signIn(login);
   }
-  @UseGuards(CustomAuthGuard)
+  @IsPublic()
   @Mutation(() => LoginResponse)
   async refreshToken(
     @Args('refresh') tokens: RefreshInput,

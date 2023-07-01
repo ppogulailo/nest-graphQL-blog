@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type BlogEntity {
+  blogPost: [BlogPostEntity!]
   createdAt: DateTime!
   id: ID!
 
@@ -12,8 +13,29 @@ type BlogEntity {
   user: UserEntity!
 }
 
+type BlogPostEntity {
+  blog: BlogEntity!
+  createdAt: DateTime!
+  id: ID!
+
+  """message of the blog-post"""
+  message: String!
+
+  """title of the blog-post"""
+  title: String!
+  updatedAt: DateTime!
+  user: UserEntity!
+}
+
 input CreateBlogInput {
   name: String!
+  userId: Float!
+}
+
+input CreateBlogPostInput {
+  blogId: Float!
+  message: String!
+  title: String!
   userId: Float!
 }
 
@@ -42,17 +64,23 @@ type LoginResponse {
 
 type Mutation {
   createBlog(createBlog: CreateBlogInput!): BlogEntity!
+  createBlogPost(createBlogPost: CreateBlogPostInput!): BlogPostEntity!
   login(login: LoginInput!): LoginResponse!
   refreshToken(refresh: RefreshInput!): LoginResponse!
+  removeBlogPost(id: Float!): Float!
   removeUser(id: Float!): Float!
   signup(createUserDto: CreateUserInput!): LoginResponse!
+  updateBlog(updateBlog: UpdateBlogInput!): BlogEntity!
+  updateBlogPost(updateBlogPost: UpdateBlogPostInput!): BlogPostEntity!
   updateUser(updateUser: UpdateUserInput!): UserEntity!
 }
 
 type Query {
+  getAllBlogPosts: [BlogPostEntity!]!
   getAllBlogs: [BlogEntity!]!
   getAllUsers: [UserEntity!]!
-  getOneUser(id: Float!): UserEntity!
+  getOneBlockPost(id: Float!): BlogPostEntity!
+  getOneUser(id: Float!): BlogEntity!
 }
 
 input RefreshInput {
@@ -61,12 +89,23 @@ input RefreshInput {
   refresh_token: String!
 }
 
+input UpdateBlogInput {
+  id: ID!
+  name: String!
+}
+
+input UpdateBlogPostInput {
+  id: ID!
+  title: String!
+}
+
 input UpdateUserInput {
   id: ID!
   refreshToken: String
 }
 
 type UserEntity {
+  blogPost: [BlogPostEntity!]
   blogs: [BlogEntity!]
   createdAt: DateTime!
 

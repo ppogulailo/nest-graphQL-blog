@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { BlogEntity } from '../blog/blog.entity';
+import { BlogPostEntity } from "../blog-post/blog-post.entity";
 
 export enum Roles {
   Moderator = 'Moderator',
@@ -47,4 +48,7 @@ export class UserEntity {
   @OneToMany(() => BlogEntity, (blog) => blog.user)
   @Field(() => [BlogEntity], { nullable: true })
   blogs?: BlogEntity[];
+  @OneToMany(() => BlogPostEntity, (blogPost) => blogPost.user)
+  @Field(() => [BlogPostEntity], { nullable: true })
+  blogPost?: BlogPostEntity[];
 }
