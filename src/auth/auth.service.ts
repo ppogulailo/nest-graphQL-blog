@@ -11,7 +11,7 @@ import { UserService } from 'src/users/user.service';
 import { UserEntity } from 'src/users/user.entity';
 import { LoginInput } from './inputs/login.input';
 import { CreateUserInput } from '../users/inputs /create-user.input';
-import { LoginResponse, RefreshResponse } from './dto/login.response';
+import { LoginResponse, RefreshResponse } from './response/login.response';
 import { ACCESS_DENIED } from './const/auth.const';
 
 @Injectable()
@@ -34,25 +34,19 @@ export class AuthService {
       ...userData,
       password: hash,
     });
-    try {
-      const { accessToken, refreshToken } = await this.getTokens(
-        newUser.id,
-        newUser.email,
-      );
-      await this.updateRefreshToken(newUser.id, refreshToken);
-      console.log(accessToken,refreshToken,newUser)
-      return {
-        access_token: accessToken,
-        refresh_token: refreshToken,
-        user: newUser,
-      };
-    }catch (e){
-      console.log(e)
-    }
+    const { accessToken, refreshToken } = await this.getTokens(
+      newUser.id,
+      newUser.email,
+    );
+    await this.updateRefreshToken(newUser.id, refreshToken);
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      user: newUser,
+    };
   }
 
   async signIn(data: LoginInput): Promise<LoginResponse> {
-    console.log(data);
     // Check if user exists
     const user = await this.usersService.findByEmail(data.email);
     if (!user) {

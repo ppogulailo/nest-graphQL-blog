@@ -34,11 +34,9 @@ export class graphqlContextGetToken extends AuthGuard('jwt') {
     try {
       const gqlContext = GqlExecutionContext.create(context);
       const { req } = gqlContext.getContext();
-      console.log(req.body.variables.Authorization);
       const decodedToken = await this.authService.verifyUser(
         req.body.variables.Authorization,
       );
-      console.log(decodedToken);
       // make sure that the user is not deleted, or that props or rights changed compared to the time when the jwt was issued
       const user = await this.userService.findById(decodedToken.id);
       if (user) {

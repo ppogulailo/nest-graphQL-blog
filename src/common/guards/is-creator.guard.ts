@@ -28,15 +28,7 @@ export class IsCreatorGuard implements CanActivate {
     );
     const selectedService = serviceMap[service];
     const { user } = await selectedService.findById(args.id);
-    // const { user, params }: { user: any; params: { id: number } } = req;
-    //
-    // if (!user || !params) return false;
-    //
-    if (req.user.role === Roles.Moderator) return true; // allow admins to get make requests
-    //
-    // const userId = user.id;
-    // const feedId = params.id;
-    console.log(user.id === req.user.id);
+    if (req.user.role === Roles.Moderator) return true; // allow Moderator to get make requests
     return user.id === req.user.id;
   }
 }
