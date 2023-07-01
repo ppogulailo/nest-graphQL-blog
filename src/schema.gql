@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type BlogEntity {
+  createdAt: DateTime!
+  id: ID!
+
+  """name of the blog"""
+  name: String!
+  updatedAt: DateTime!
+  user: UserEntity!
+}
+
+input CreateBlogInput {
+  name: String!
+  userId: Float!
+}
+
 input CreateUserInput {
   email: String!
   firstName: String
@@ -26,6 +41,7 @@ type LoginResponse {
 }
 
 type Mutation {
+  createBlog(createBlog: CreateBlogInput!): BlogEntity!
   login(login: LoginInput!): LoginResponse!
   refreshToken(refresh: RefreshInput!): LoginResponse!
   removeUser(id: Float!): Float!
@@ -34,6 +50,7 @@ type Mutation {
 }
 
 type Query {
+  getAllBlogs: [BlogEntity!]!
   getAllUsers: [UserEntity!]!
   getOneUser(id: Float!): UserEntity!
 }
@@ -50,6 +67,7 @@ input UpdateUserInput {
 }
 
 type UserEntity {
+  blogs: [BlogEntity!]
   createdAt: DateTime!
 
   """email of the user"""
