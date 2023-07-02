@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository,Like } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 import { BlogEntity } from './blog.entity';
 import { CreateBlogInput } from './inputs/create-blog.input';
 import { UpdateBlogInput } from './inputs/update-blog.input';
@@ -15,8 +15,11 @@ export class BlogService {
     private readonly userService: UserService,
   ) {}
 
-  async create(createBlogInput: CreateBlogInput): Promise<BlogEntity> {
-    const user = await this.userService.findById(createBlogInput.userId); // Замените 'userId' на поле, которое содержит идентификатор пользователя в createBlogInput
+  async create(
+    createBlogInput: CreateBlogInput,
+    userId: number,
+  ): Promise<BlogEntity> {
+    const user = await this.userService.findById(userId); // Замените 'userId' на поле, которое содержит идентификатор пользователя в createBlogInput
     const blog = this.blogRepository.create({ ...createBlogInput, user: user });
     return await this.blogRepository.save(blog);
   }
@@ -33,16 +36,10 @@ export class BlogService {
     take,
     skip,
     title,
-    dateSort,
-    id,
   }: FetchBlogInput): Promise<BlogEntity[]> {
     return await this.blogRepository.find({
       where: {
         name: Like(`%${title}%`),
-        id,
-      },
-      order: {
-        createdAt: dateSort,
       },
       relations: ['user'],
       take: take,

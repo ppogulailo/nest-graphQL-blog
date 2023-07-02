@@ -98,7 +98,9 @@ describe('UserService', () => {
       customerRepositoryMock.findOne.mockReturnValue(user);
       const foundCustomer = await service.findById(user.id);
       expect(foundCustomer).toMatchObject(user);
-      expect(customerRepositoryMock.findOne).toHaveBeenCalledWith({ where: { id: user.id } });
+      expect(customerRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: { id: user.id },
+      });
     });
   });
 });

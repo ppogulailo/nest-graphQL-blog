@@ -43,18 +43,10 @@ export class BlogPostService {
     take,
     skip,
     title,
-    dateSort,
-    id,
   }: FetchBlogPostInput): Promise<BlogPostEntity[]> {
     return await this.blogPostRepository.find({
       where: {
         title: Like(`%${title}%`),
-        blog: {
-          id,
-        },
-      },
-      order: {
-        createdAt: dateSort,
       },
       relations: ['user', 'blog'],
       take: take,

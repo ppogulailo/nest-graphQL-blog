@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { BlogEntity } from './blog.entity';
 import { CreateBlogInput } from './inputs/create-blog.input';
@@ -11,6 +11,8 @@ import {
 } from '../common/decorators/services.decoratir';
 import { FetchBlogPostInput } from '../blog-post/inputs/fetch-blog-post.input';
 import { FetchBlogInput } from './inputs/fetch-blog.input';
+import { User } from '../common/decorators/user.decorator';
+import { UserEntity } from '../users/user.entity';
 
 @Resolver('Blog')
 export class BlogResolver {
@@ -18,8 +20,9 @@ export class BlogResolver {
   @Mutation(() => BlogEntity)
   async createBlog(
     @Args('createBlog') createBlogInput: CreateBlogInput,
+    @User() user: UserEntity,
   ): Promise<BlogEntity> {
-    return await this.blogService.create(createBlogInput);
+    return await this.blogService.create(createBlogInput, user.id);
   }
 
   @Query(() => [BlogEntity])
