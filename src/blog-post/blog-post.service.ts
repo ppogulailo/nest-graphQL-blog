@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from "typeorm";
+import { Like, Repository } from 'typeorm';
 import { BlogPostEntity } from './blog-post.entity';
 import { CreateBlogPostInput } from './inputs/create-blog-post.input';
 import { UpdateBlogPostInput } from './inputs/update-blog-post.input';
@@ -19,8 +19,9 @@ export class BlogPostService {
 
   async create(
     createBlogPostInput: CreateBlogPostInput,
+    userId,
   ): Promise<BlogPostEntity> {
-    const user = await this.userService.findById(createBlogPostInput.userId);
+    const user = await this.userService.findById(userId);
     const blog = await this.blogService.findById(createBlogPostInput.blogId);
     const blogPost = this.blogPostRepository.create({
       ...createBlogPostInput,
@@ -32,7 +33,7 @@ export class BlogPostService {
 
   async findById(id: number) {
     return await this.blogPostRepository.findOne({
-      relations: ['user'],
+      relations: ['user', 'blog'],
       where: {
         id: id,
       },

@@ -35,7 +35,6 @@ input CreateBlogPostInput {
   blogId: Float!
   message: String!
   title: String!
-  userId: Float!
 }
 
 input CreateUserInput {
@@ -76,7 +75,7 @@ type Mutation {
 
 type Query {
   getAllBlogPosts(skip: Int! = 0, take: Int! = 25, title: String! = ""): [BlogPostEntity!]!
-  getAllBlogs(id: Float!, skip: Int! = 0, take: Int! = 25, title: String! = ""): [BlogEntity!]!
+  getAllBlogs(skip: Int! = 0, take: Int! = 25, title: String! = ""): [BlogEntity!]!
   getAllUsers: [UserEntity!]!
   getOneBlockPost(id: Float!): BlogPostEntity!
   getOneUser(id: Float!): BlogEntity!

@@ -5,7 +5,7 @@ import { CreateBlogPostInput } from './inputs/create-blog-post.input';
 import { UpdateBlogPostInput } from './inputs/update-blog-post.input';
 import { IsPublic } from '../common/decorators/public.decorator';
 import { HasRoles } from '../common/decorators/roles.decorator';
-import { Roles } from '../users/user.entity';
+import { Roles, UserEntity } from '../users/user.entity';
 import { SetMetadata, UseGuards } from '@nestjs/common';
 import { IsCreatorGuard } from '../common/guards/is-creator.guard';
 import {
@@ -13,6 +13,7 @@ import {
   ServiceType,
 } from '../common/decorators/services.decoratir';
 import { FetchBlogPostInput } from './inputs/fetch-blog-post.input';
+import { User } from '../common/decorators/user.decorator';
 
 @Resolver('Blog-Post')
 export class BlogPostResolver {
@@ -21,8 +22,10 @@ export class BlogPostResolver {
   @Mutation(() => BlogPostEntity)
   async createBlogPost(
     @Args('createBlogPost') createBlogInput: CreateBlogPostInput,
+    @User() user: UserEntity,
   ): Promise<BlogPostEntity> {
-    return await this.blogPostService.create(createBlogInput);
+    console.log(user)
+    return await this.blogPostService.create(createBlogInput, user.id);
   }
 
   @Query(() => [BlogPostEntity])
