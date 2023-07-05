@@ -7,19 +7,19 @@ import { UserService } from '../users/user.service';
 import { Roles, UserEntity } from '../users/user.entity';
 import { CreateBlogInput } from './inputs/create-blog.input';
 type MockType<T> = {
-  [P in keyof T]?: jest.Mock<{}>;
+  [P in keyof T]?: jest.Mock<object>;
 };
 describe('BlogService', () => {
   let blogService: BlogService;
   let userService: UserService;
 
-  const customerRepositoryMockBlog: MockType<Repository<BlogEntity>> = {
+  const blogRepositoryMock: MockType<Repository<BlogEntity>> = {
     save: jest.fn(),
     findOne: jest.fn(),
     find: jest.fn(),
     create: jest.fn(),
   };
-  const customerRepositoryMockUser: MockType<Repository<UserEntity>> = {
+  const userRepositoryMock: MockType<Repository<UserEntity>> = {
     save: jest.fn(),
     findOne: jest.fn(),
     find: jest.fn(),
@@ -31,11 +31,11 @@ describe('BlogService', () => {
         UserService,
         {
           provide: getRepositoryToken(BlogEntity),
-          useValue: customerRepositoryMockBlog,
+          useValue: blogRepositoryMock,
         },
         {
           provide: getRepositoryToken(UserEntity),
-          useValue: customerRepositoryMockUser,
+          useValue: userRepositoryMock,
         },
       ],
     }).compile();
@@ -47,7 +47,7 @@ describe('BlogService', () => {
     expect(userService).toBeDefined();
   });
   describe('create', () => {
-    it('should create a new user', async () => {
+    it('should create a new blog', async () => {
       const createBlogInput: CreateBlogInput = {
         name: 'Test Blog',
       };
@@ -70,13 +70,13 @@ describe('BlogService', () => {
         updatedAt: new Date(),
         user: user,
       };
-      customerRepositoryMockBlog.save.mockReturnValue(createdBlog);
+      blogRepositoryMock.save.mockReturnValue(createdBlog);
       const newBlog = await blogService.create(createBlogInput, user.id);
       expect(newBlog).toMatchObject(createdBlog);
     });
   });
   describe('findAll', () => {
-    it('should find all customers', async () => {
+    it('should find all blogs', async () => {
       const blogs = [
         {
           name: 'any',
@@ -91,7 +91,7 @@ describe('BlogService', () => {
           updatedAt: new Date(),
         },
       ];
-      customerRepositoryMockBlog.find.mockReturnValue(blogs);
+      blogRepositoryMock.find.mockReturnValue(blogs);
       const foundCustomers = await blogService.findMany({
         title: '',
         take: 1,
@@ -106,7 +106,7 @@ describe('BlogService', () => {
       };
 
       expect(foundCustomers).toContainEqual(expectedCustomer);
-      expect(customerRepositoryMockBlog.find).toHaveBeenCalled();
+      expect(blogRepositoryMock.find).toHaveBeenCalled();
     });
   });
   describe('findOne', () => {
@@ -117,10 +117,10 @@ describe('BlogService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      customerRepositoryMockBlog.findOne.mockReturnValue(user);
+      blogRepositoryMock.findOne.mockReturnValue(user);
       const foundCustomer = await blogService.findById(user.id);
       expect(foundCustomer).toMatchObject(user);
-      expect(customerRepositoryMockBlog.findOne).toHaveBeenCalledWith({
+      expect(blogRepositoryMock.findOne).toHaveBeenCalledWith({
         where: { id: user.id },
       });
     });

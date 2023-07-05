@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import { BlogPostService } from '../blog-post/blog-post.service';
 import { BlogPostEntity } from '../blog-post/blog-post.entity';
 type MockType<T> = {
-  [P in keyof T]?: jest.Mock<{}>;
+  [P in keyof T]?: jest.Mock<object>;
 };
 describe('BlogResolver', () => {
   let blogResolver: BlogResolver;

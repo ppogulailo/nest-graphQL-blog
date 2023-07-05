@@ -3,13 +3,12 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Roles, UserEntity } from './user.entity';
 import { UserService } from './user.service';
-import { Field } from '@nestjs/graphql';
 type MockType<T> = {
-  [P in keyof T]?: jest.Mock<{}>;
+  [P in keyof T]?: jest.Mock<object>;
 };
 describe('UserService', () => {
   let service: UserService;
-  const customerRepositoryMock: MockType<Repository<UserEntity>> = {
+  const userRepositoryMock: MockType<Repository<UserEntity>> = {
     save: jest.fn(),
     findOne: jest.fn(),
     find: jest.fn(),
@@ -20,7 +19,7 @@ describe('UserService', () => {
         UserService,
         {
           provide: getRepositoryToken(UserEntity),
-          useValue: customerRepositoryMock,
+          useValue: userRepositoryMock,
         },
       ],
     }).compile();
@@ -31,16 +30,16 @@ describe('UserService', () => {
   });
   describe('create', () => {
     it('should create a new user', async () => {
-      const customerDTO = {
+      const userInput = {
         email: 'custom@gmail.com',
         firstName: 'string',
         lastName: 'string',
         password: 'string',
       };
-      customerRepositoryMock.save.mockReturnValue(customerDTO);
-      const newCustomer = await service.create(customerDTO);
-      expect(newCustomer).toMatchObject(customerDTO);
-      expect(customerRepositoryMock.save).toHaveBeenCalledWith(customerDTO);
+      userRepositoryMock.save.mockReturnValue(userInput);
+      const newUser = await service.create(userInput);
+      expect(newUser).toMatchObject(userInput);
+      expect(userRepositoryMock.save).toHaveBeenCalledWith(userInput);
     });
   });
   describe('findAll', () => {
@@ -68,9 +67,9 @@ describe('UserService', () => {
           updatedAt: new Date(),
         },
       ];
-      customerRepositoryMock.find.mockReturnValue(users);
-      const foundCustomers = await service.findMany();
-      expect(foundCustomers).toContainEqual({
+      userRepositoryMock.find.mockReturnValue(users);
+      const foundUsers = await service.findMany();
+      expect(foundUsers).toContainEqual({
         id: 1,
         name: 'John Doe',
         email: 'john.doe@email.com',
@@ -80,7 +79,7 @@ describe('UserService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      expect(customerRepositoryMock.find).toHaveBeenCalled();
+      expect(userRepositoryMock.find).toHaveBeenCalled();
     });
   });
   describe('findOne', () => {
@@ -95,10 +94,10 @@ describe('UserService', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
       };
-      customerRepositoryMock.findOne.mockReturnValue(user);
-      const foundCustomer = await service.findById(user.id);
-      expect(foundCustomer).toMatchObject(user);
-      expect(customerRepositoryMock.findOne).toHaveBeenCalledWith({
+      userRepositoryMock.findOne.mockReturnValue(user);
+      const foundUser = await service.findById(user.id);
+      expect(foundUser).toMatchObject(user);
+      expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
         where: { id: user.id },
       });
     });

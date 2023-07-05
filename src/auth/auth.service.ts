@@ -7,12 +7,12 @@ import {
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { UserService } from 'src/users/user.service';
-import { UserEntity } from 'src/users/user.entity';
 import { LoginInput } from './inputs/login.input';
 import { CreateUserInput } from '../users/inputs /create-user.input';
 import { LoginResponse, RefreshResponse } from './response/login.response';
 import { ACCESS_DENIED } from './const/auth.const';
+import { UserService } from '../users/user.service';
+import { UserEntity } from '../users/user.entity';
 
 @Injectable()
 export class AuthService {

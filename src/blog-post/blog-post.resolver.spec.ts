@@ -6,11 +6,10 @@ import { Repository } from 'typeorm';
 import { BlogPostService } from '../blog-post/blog-post.service';
 import { BlogPostEntity } from '../blog-post/blog-post.entity';
 import { BlogPostResolver } from './blog-post.resolver';
-import { BlogResolver } from '../blog/blog.resolver';
-import { BlogService } from '../blog/blog.service';
 import { UpdateBlogPostInput } from './inputs/update-blog-post.input';
+
 type MockType<T> = {
-  [P in keyof T]?: jest.Mock<{}>;
+  [P in keyof T]?: jest.Mock<object>;
 };
 describe('BlogPostResolver', () => {
   let blogPostResolver: BlogPostResolver;
@@ -55,8 +54,8 @@ describe('BlogPostResolver', () => {
     blogPostService = module.get<BlogPostService>(BlogPostService);
   });
 
-  describe('updateBlog', () => {
-    it('should update a blog and return the updated blog', async () => {
+  describe('updateBlogPost', () => {
+    it('should update a blogPost and return the updated blogPost', async () => {
       // Arrange
       const updateBlogPostInput: UpdateBlogPostInput = {
         id: 1,
@@ -79,8 +78,8 @@ describe('BlogPostResolver', () => {
     });
   });
 
-  describe('removeBlog', () => {
-    it('should remove a blog and return the number of affected rows', async () => {
+  describe('removeBlogPost', () => {
+    it('should remove a blogPost and return the number of affected rows', async () => {
       // Arrange
       const id = 1; // Provide the necessary input for testing
       const affectedRows = 1; // Provide the expected number of affected rows
@@ -96,8 +95,8 @@ describe('BlogPostResolver', () => {
     });
   });
 
-  describe('getOneBlog', () => {
-    it('should retrieve a blog by ID and return the user', async () => {
+  describe('getOneBlogPost', () => {
+    it('should retrieve a blogPost by ID and return the user', async () => {
       // Arrange
       const id = 1; // Provide the necessary input for testing
       const blogPost = new BlogPostEntity();
@@ -115,8 +114,8 @@ describe('BlogPostResolver', () => {
     });
   });
 
-  describe('getAllUsers', () => {
-    it('should retrieve all blogs and return an array of blogs', async () => {
+  describe('getAllBlogPost', () => {
+    it('should retrieve all blogPosts and return an array of blogPosts', async () => {
       // Arrange
       const blogPost1 = new BlogPostEntity();
       blogPost1.id = 1;
