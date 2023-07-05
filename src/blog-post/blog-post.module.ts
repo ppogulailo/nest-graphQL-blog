@@ -20,5 +20,6 @@ import { JwtService } from '@nestjs/jwt';
     AuthService,
     JwtService,
   ],
+  exports:[BlogPostService]
 })
 export class BlogPostModule {}

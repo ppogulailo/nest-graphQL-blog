@@ -7,7 +7,5 @@ export class CreateBlogPostInput {
   @Field(() => String)
   message: string;
   @Field(() => Number)
-  userId: number;
-  @Field(() => Number)
   blogId: number;
 }

@@ -29,7 +29,7 @@ export class AuthResolver {
     return await this.authService.signIn(login);
   }
   @IsPublic()
-  @Mutation(() => LoginResponse)
+  @Mutation(() => RefreshResponse)
   async refreshToken(
     @Args('refresh') tokens: RefreshInput,
   ): Promise<RefreshResponse> {
