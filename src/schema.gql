@@ -64,7 +64,7 @@ type Mutation {
   createBlog(createBlog: CreateBlogInput!): BlogEntity!
   createBlogPost(createBlogPost: CreateBlogPostInput!): BlogPostEntity!
   login(login: LoginInput!): LoginResponse!
-  refreshToken(refresh: RefreshInput!): LoginResponse!
+  refreshToken(refresh: RefreshInput!): RefreshResponse!
   removeBlogPost(id: Float!): Float!
   removeUser(id: Float!): Float!
   signup(createUserDto: CreateUserInput!): LoginResponse!
@@ -82,6 +82,12 @@ type Query {
 }
 
 input RefreshInput {
+  access_token: String!
+  id: Float!
+  refresh_token: String!
+}
+
+type RefreshResponse {
   access_token: String!
   id: Float!
   refresh_token: String!

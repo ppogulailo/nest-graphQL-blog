@@ -47,7 +47,6 @@ import { UserService } from "./users/user.service";
     BlogPostModule,
   ],
   providers: [
-
     {
       provide: APP_GUARD,
       useClass: graphqlContextGetToken,

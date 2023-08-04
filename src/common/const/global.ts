@@ -1,0 +1,1 @@
+export const EMAIL_VALIDATION_MESSAGE="Email must be an email!"

@@ -1,18 +1,21 @@
 import { Field, Int, ArgsType } from '@nestjs/graphql';
-import { IsOptional, Max, Min } from "class-validator";
+import {IsNumber, IsOptional, IsString, Max, Min} from "class-validator";
 
 @ArgsType()
 export class FetchBlogInput {
   @Field(() => Int)
   @Min(0)
   @IsOptional()
+  @IsNumber()
   skip? = 0;
   @Field(() => Int)
   @Min(1)
   @Max(50)
   @IsOptional()
+  @IsNumber()
   take? = 25;
   @Field(() => String)
   @IsOptional()
+  @IsString()
   title? = '';
 }

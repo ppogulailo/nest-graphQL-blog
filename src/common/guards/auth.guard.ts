@@ -37,15 +37,12 @@ export class graphqlContextGetToken extends AuthGuard('jwt') {
       const decodedToken = await this.authService.verifyUser(
         req.body.variables.Authorization,
       );
-      console.log(decodedToken)
       // make sure that the user is not deleted, or that props or rights changed compared to the time when the jwt was issued
       const user = await this.userService.findById(decodedToken.id);
-      console.log(user)
       if (user) {
         // add the user to our req object, so that we can access it later when we need it
         // if it would be here, we would like overwrite
         req.user = user;
-        console.log(req.user)
         return true;
       } else {
         throw new UnauthorizedException(USER_NOT_AUTHORIZE);
