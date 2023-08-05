@@ -8,6 +8,7 @@ import {Roles, UserEntity} from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { BlogPostService } from '../blog-post/blog-post.service';
 import { BlogPostEntity } from '../blog-post/blog-post.entity';
+import {ForbiddenException} from "@nestjs/common";
 type MockType<T> = {
   [P in keyof T]?: jest.Mock<object>;
 };
@@ -35,7 +36,7 @@ describe('BlogResolver', () => {
           useValue: {
             updateById: jest.fn(),
             removeById: jest.fn(),
-            isCreatorOrModerator: jest.fn().mockResolvedValue(true),
+            isCreatorOrModerator: jest.fn(),
             findById: jest.fn(),
             findMany: jest.fn(),
           },
@@ -84,6 +85,86 @@ describe('BlogResolver', () => {
       expect(blogService.updateById).toHaveBeenCalledWith(updateUserInput);
       expect(result).toBe(updatedBlog);
     });
+    it('should update a blog and return the updated blog', async () => {
+      // Arrange
+      const updateUserInput = {
+        id: 1,
+        name: 'Blog1',
+      };
+
+      const updatedBlog = new BlogEntity();
+      updatedBlog.id = 1;
+      updatedBlog.name = 'Blog1';
+
+      jest.spyOn(blogService, 'updateById').mockResolvedValue(updatedBlog);
+      jest.spyOn(blogService, 'isCreatorOrModerator').mockResolvedValue(true);
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Moderator;
+
+      // Act
+      const result = await blogResolver.updateBlog(updateUserInput, user2);
+
+      // Assert
+      expect(blogService.updateById).toHaveBeenCalledWith(updateUserInput);
+      expect(result).toBe(updatedBlog);
+    });
+
+    it('should update a blog and return the updated blog', async () => {
+      // Arrange
+      const updateUserInput = {
+        id: 1,
+        name: 'Blog1',
+      };
+
+      const updatedBlog = new BlogEntity();
+      updatedBlog.id = 1;
+      updatedBlog.name = 'Blog1';
+
+      jest.spyOn(blogService, 'updateById').mockResolvedValue(updatedBlog);
+      jest.spyOn(blogService, 'isCreatorOrModerator').mockResolvedValue(true);
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Moderator;
+
+      // Act
+      const result = await blogResolver.updateBlog(updateUserInput, user2);
+
+      // Assert
+      expect(blogService.updateById).toHaveBeenCalledWith(updateUserInput);
+      expect(result).toBe(updatedBlog);
+    });
+
+    it('should throw ForbiddenException (User is not creator or moderator)', async () => {
+      // Arrange
+      const updateUserInput = {
+        id: 1,
+        name: 'Blog1',
+      };
+
+      jest.spyOn(blogService, 'updateById').mockResolvedValue(new BlogEntity());
+      jest.spyOn(blogService, 'isCreatorOrModerator').mockResolvedValue(false);
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Writer;
+
+      // Act & Assert
+      await expect(blogResolver.updateBlog(updateUserInput, user2)).rejects.toThrowError(
+          ForbiddenException,
+      );
+    });
   });
 
   describe('removeBlog', () => {
@@ -109,11 +190,29 @@ describe('BlogResolver', () => {
       expect(blogService.removeById).toHaveBeenCalledWith(id);
       expect(result).toBe(affectedRows);
     });
+
+    it('should throw ForbiddenException (User is not creator or moderator)', async () => {
+      // Arrange
+      const id = 1; // Provide the necessary input for testing
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Writer;
+
+      // Act & Assert
+      await expect(blogResolver.removeBlog(id, user2)).rejects.toThrowError(
+          ForbiddenException,
+      );
+    });
   });
 
   describe('getOneBlog', () => {
     it('should retrieve a blog by ID and return the user', async () => {
       // Arrange
+
+      // User
       const user2 = new UserEntity();
       user2.id = 2;
       user2.firstName = 'Jane';
@@ -121,6 +220,9 @@ describe('BlogResolver', () => {
       user2.email = 'jane.smith@example.com';
       user2.role = Roles.Moderator;
       const id = 1; // Provide the necessary input for testing
+
+      // BLOG
+
       const blog = new BlogEntity();
       blog.id = 1;
       blog.name = 'Blog1';

@@ -7,6 +7,7 @@ import { BlogPostService } from '../blog-post/blog-post.service';
 import { BlogPostEntity } from '../blog-post/blog-post.entity';
 import { BlogPostResolver } from './blog-post.resolver';
 import { UpdateBlogPostInput } from './inputs/update-blog-post.input';
+import {ForbiddenException} from "@nestjs/common";
 
 type MockType<T> = {
   [P in keyof T]?: jest.Mock<object>;
@@ -85,6 +86,32 @@ describe('BlogPostResolver', () => {
       expect(blogPostService.updateById).toHaveBeenCalledWith(updatedBlogPost);
       expect(result).toBe(updatedBlogPost);
     });
+    it('should throw ForbiddenException (User is not creator or moderator)', async () => {
+      // Arrange
+      const updateBlogPostInput = {
+        id: 1,
+        title: 'Blog1',
+      };
+
+      const updatedBlogPost = new BlogPostEntity();
+      updatedBlogPost.id = 1;
+      updatedBlogPost.title = 'Blog1';
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Writer;
+
+      jest.spyOn(blogPostService, 'updateById').mockResolvedValue(updatedBlogPost);
+      jest.spyOn(blogPostService, 'isCreatorOrModerator').mockResolvedValue(false);
+
+      // Act & Assert
+      await expect(blogPostResolver.updateBlogPost(updateBlogPostInput, user2)).rejects.toThrowError(
+          ForbiddenException,
+      );
+    });
   });
 
   describe('removeBlogPost', () => {
@@ -107,6 +134,26 @@ describe('BlogPostResolver', () => {
       // Assert
       expect(blogPostService.removeById).toHaveBeenCalledWith(id);
       expect(result).toBe(id);
+    });
+    it('should throw ForbiddenException (User is not creator or moderator)', async () => {
+      // Arrange
+      const id = 1; // Provide the necessary input for testing
+      const affectedRows = 1; // Provide the expected number of affected rows
+
+      jest.spyOn(blogPostService, 'removeById').mockResolvedValue(affectedRows);
+      jest.spyOn(blogPostService, 'isCreatorOrModerator').mockResolvedValue(false);
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Writer;
+
+      // Act & Assert
+      await expect(blogPostResolver.removeBlogPost(id, user2)).rejects.toThrowError(
+          ForbiddenException,
+      );
     });
   });
 

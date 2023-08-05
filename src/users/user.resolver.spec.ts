@@ -2,6 +2,7 @@ import {Test, TestingModule} from '@nestjs/testing';
 import {UserResolver} from './user.resolver';
 import {UserService} from './user.service';
 import {Roles, UserEntity} from './user.entity';
+import {ForbiddenException} from "@nestjs/common";
 
 describe('UserResolver', () => {
   let userResolver: UserResolver;
@@ -58,6 +59,35 @@ describe('UserResolver', () => {
       // Assert
       expect(userService.updateById).toHaveBeenCalledWith(updateUserInput);
       expect(result).toBe(updatedUser);
+    })
+    it('should update a user and return the updated user', async () => {
+      // Arrange
+      const updateUserInput = {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+      };
+
+      const updatedUser = new UserEntity();
+      updatedUser.id = 1;
+      updatedUser.firstName = 'John';
+      updatedUser.lastName = 'Doe';
+      updatedUser.email = 'john.doe@example.com';
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Writer;
+      jest.spyOn(userService, 'updateById').mockResolvedValue(updatedUser);
+      jest.spyOn(userService, 'isCreatorOrModerator').mockResolvedValue(false);
+      // Act
+
+      await expect(userResolver.updateUser(updateUserInput, user2)).rejects.toThrowError(
+          ForbiddenException,
+      );
     });
   });
 
@@ -83,7 +113,26 @@ describe('UserResolver', () => {
       expect(userService.removeById).toHaveBeenCalledWith(id);
       expect(result).toBe(affectedRows);
     });
-  });
+    it('should throw ForbiddenException (User is not creator or moderator)', async () => {
+      // Arrange
+      const id = 1; // Provide the necessary input for testing
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Writer;
+
+      jest.spyOn(userService, 'removeById').mockResolvedValue(id);
+      jest.spyOn(userService, 'isCreatorOrModerator').mockResolvedValue(false);
+
+      // Act & Assert
+      await expect(userResolver.removeUser(id, user2)).rejects.toThrowError(
+          ForbiddenException,
+      );
+    });
+});
 
   describe('getOneUser', () => {
     it('should retrieve a user by ID and return the user', async () => {
