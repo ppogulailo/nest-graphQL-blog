@@ -18,7 +18,6 @@ export class AuthResolver {
   @IsPublic()
   @Mutation(() => LoginResponse)
   async signup(
-    @Context() context: GraphQLExecutionContext,
     @Args('createUserDto') createUserDto: CreateUserInput,
   ): Promise<LoginResponse> {
     return this.authService.signUp(createUserDto);

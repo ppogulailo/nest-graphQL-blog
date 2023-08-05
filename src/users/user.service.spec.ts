@@ -69,16 +69,7 @@ describe('UserService', () => {
       ];
       userRepositoryMock.find.mockReturnValue(users);
       const foundUsers = await service.findMany();
-      expect(foundUsers).toContainEqual({
-        id: 1,
-        name: 'John Doe',
-        email: 'john.doe@email.com',
-        firstName: 'firstName',
-        lastName: 'lastName',
-        role: Roles.Moderator,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
+      expect(foundUsers).toEqual(users);
       expect(userRepositoryMock.find).toHaveBeenCalled();
     });
   });

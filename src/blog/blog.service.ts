@@ -6,6 +6,7 @@ import { CreateBlogInput } from './inputs/create-blog.input';
 import { UpdateBlogInput } from './inputs/update-blog.input';
 import { UserService } from '../users/user.service';
 import { FetchBlogInput } from './inputs/fetch-blog.input';
+import {Roles} from "../users/user.entity";
 
 @Injectable()
 export class BlogService {
@@ -14,12 +15,25 @@ export class BlogService {
     private readonly blogRepository: Repository<BlogEntity>,
     private readonly userService: UserService,
   ) {}
+  async getCount(title): Promise<number> {
+    const count = await this.blogRepository.count({
+      where: {
+        name: Like(`%${title}%`),
+      },
+    })
+    return count
+  }
+  async isCreatorOrModerator(id: number, currentUser): Promise<boolean> {
+    const {user} = await this.findById(id)
+    if (currentUser.role === Roles.Moderator) return true; // allow Moderator to get make requests
+    return user.id === currentUser.id;
+  }
 
   async create(
     createBlogInput: CreateBlogInput,
     userId: number,
   ): Promise<BlogEntity> {
-    const user = await this.userService.findById(userId); // Замените 'userId' на поле, которое содержит идентификатор пользователя в createBlogInput
+    const user = await this.userService.findById(userId);
     const blog = this.blogRepository.create({ ...createBlogInput, user: user });
     return await this.blogRepository.save(blog);
   }
@@ -29,6 +43,7 @@ export class BlogService {
       where: {
         id: id,
       },
+      relations: ['user'],
     });
   }
 

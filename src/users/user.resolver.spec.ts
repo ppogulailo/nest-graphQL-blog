@@ -1,7 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { UserResolver } from './user.resolver';
-import { UserService } from './user.service';
-import { Roles, UserEntity } from './user.entity';
+import {Test, TestingModule} from '@nestjs/testing';
+import {UserResolver} from './user.resolver';
+import {UserService} from './user.service';
+import {Roles, UserEntity} from './user.entity';
 
 describe('UserResolver', () => {
   let userResolver: UserResolver;
@@ -16,6 +16,7 @@ describe('UserResolver', () => {
           useValue: {
             updateById: jest.fn(),
             removeById: jest.fn(),
+            isCreatorOrModerator: jest.fn().mockResolvedValue(true),
             findById: jest.fn(),
             findMany: jest.fn(),
           },
@@ -43,10 +44,16 @@ describe('UserResolver', () => {
       updatedUser.lastName = 'Doe';
       updatedUser.email = 'john.doe@example.com';
 
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Moderator;
       jest.spyOn(userService, 'updateById').mockResolvedValue(updatedUser);
-
+      jest.spyOn(userService, 'isCreatorOrModerator').mockResolvedValue(true);
       // Act
-      const result = await userResolver.updateUser(updateUserInput);
+      const result = await userResolver.updateUser(updateUserInput,user2);
 
       // Assert
       expect(userService.updateById).toHaveBeenCalledWith(updateUserInput);
@@ -59,11 +66,18 @@ describe('UserResolver', () => {
       // Arrange
       const id = 1; // Provide the necessary input for testing
       const affectedRows = 1; // Provide the expected number of affected rows
+      const user2 = new UserEntity();
+      user2.id = 1;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Moderator;
 
-      jest.spyOn(userService, 'removeById').mockResolvedValue(affectedRows);
+      jest.spyOn(userService, 'removeById').mockResolvedValue(id);
+      jest.spyOn(userService, 'isCreatorOrModerator').mockResolvedValue(true);
 
       // Act
-      const result = await userResolver.removeUser(id);
+      const result = await userResolver.removeUser(id,user2);
 
       // Assert
       expect(userService.removeById).toHaveBeenCalledWith(id);

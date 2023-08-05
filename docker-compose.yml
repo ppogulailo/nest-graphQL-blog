@@ -5,7 +5,6 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    #      npx prisma migrate reset
     command: sh -c "npm run start:prod"
     deploy:
       resources:

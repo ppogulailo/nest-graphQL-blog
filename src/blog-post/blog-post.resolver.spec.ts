@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from '../users/user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserEntity } from '../users/user.entity';
+import {Roles, UserEntity} from '../users/user.entity';
 import { Repository } from 'typeorm';
 import { BlogPostService } from '../blog-post/blog-post.service';
 import { BlogPostEntity } from '../blog-post/blog-post.entity';
@@ -35,6 +35,7 @@ describe('BlogPostResolver', () => {
           useValue: {
             updateById: jest.fn(),
             removeById: jest.fn(),
+            isCreatorOrModerator: jest.fn().mockResolvedValue(true),
             findById: jest.fn(),
             findMany: jest.fn(),
           },
@@ -65,12 +66,20 @@ describe('BlogPostResolver', () => {
       const updatedBlogPost = new BlogPostEntity();
       updatedBlogPost.id = 1;
       updatedBlogPost.title = 'Blog1';
+
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Moderator;
+
       jest
         .spyOn(blogPostService, 'updateById')
         .mockResolvedValue(updatedBlogPost);
-
+      jest.spyOn(blogPostService, 'isCreatorOrModerator').mockResolvedValue(true);
       // Act
-      const result = await blogPostResolver.updateBlogPost(updateBlogPostInput);
+      const result = await blogPostResolver.updateBlogPost(updateBlogPostInput,user2);
 
       // Assert
       expect(blogPostService.updateById).toHaveBeenCalledWith(updatedBlogPost);
@@ -82,16 +91,22 @@ describe('BlogPostResolver', () => {
     it('should remove a blogPost and return the number of affected rows', async () => {
       // Arrange
       const id = 1; // Provide the necessary input for testing
-      const affectedRows = 1; // Provide the expected number of affected rows
+      jest.spyOn(blogPostService, 'isCreatorOrModerator').mockResolvedValue(true);
+      jest.spyOn(blogPostService, 'removeById').mockResolvedValue(id);
+      const user2 = new UserEntity();
+      user2.id = 2;
+      user2.firstName = 'Jane';
+      user2.lastName = 'Smith';
+      user2.email = 'jane.smith@example.com';
+      user2.role = Roles.Moderator;
 
-      jest.spyOn(blogPostService, 'removeById').mockResolvedValue(affectedRows);
 
       // Act
-      const result = await blogPostResolver.removeBlogPost(id);
+      const result = await blogPostResolver.removeBlogPost(id,user2);
 
       // Assert
       expect(blogPostService.removeById).toHaveBeenCalledWith(id);
-      expect(result).toBe(affectedRows);
+      expect(result).toBe(id);
     });
   });
 

@@ -6,6 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserService } from '../users/user.service';
 import { Roles, UserEntity } from '../users/user.entity';
 import { CreateBlogInput } from './inputs/create-blog.input';
+import {BlogPostEntity} from "../blog-post/blog-post.entity";
 type MockType<T> = {
   [P in keyof T]?: jest.Mock<object>;
 };
@@ -111,17 +112,29 @@ describe('BlogService', () => {
   });
   describe('findOne', () => {
     it('should find a blog', async () => {
-      const user = {
-        name: 'any',
-        id: 19,
+      const user: UserEntity = {
+        id: 1,
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        password: 'password',
         createdAt: new Date(),
         updatedAt: new Date(),
+        role: Roles.Moderator,
       };
-      blogRepositoryMock.findOne.mockReturnValue(user);
-      const foundCustomer = await blogService.findById(user.id);
-      expect(foundCustomer).toMatchObject(user);
+      const blog: BlogEntity = {
+        id: 1,
+        name: 'Test Blog',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        user: user,
+      };
+      blogRepositoryMock.findOne.mockReturnValue(blog);
+      const foundBlog = await blogService.findById(blog.id);
+      expect(foundBlog).toMatchObject(blog);
       expect(blogRepositoryMock.findOne).toHaveBeenCalledWith({
-        where: { id: user.id },
+        relations: ['user'],
+        where: { id: blog.id },
       });
     });
   });

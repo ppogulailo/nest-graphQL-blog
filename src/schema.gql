@@ -65,6 +65,7 @@ type Mutation {
   createBlogPost(createBlogPost: CreateBlogPostInput!): BlogPostEntity!
   login(login: LoginInput!): LoginResponse!
   refreshToken(refresh: RefreshInput!): RefreshResponse!
+  removeBlog(id: Float!): Float!
   removeBlogPost(id: Float!): Float!
   removeUser(id: Float!): Float!
   signup(createUserDto: CreateUserInput!): LoginResponse!
@@ -74,6 +75,9 @@ type Mutation {
 }
 
 type Query {
+  countBLog(skip: Int! = 0, take: Int! = 25, title: String! = ""): Float!
+  countBlogPost(skip: Int! = 0, take: Int! = 25, title: String! = ""): Float!
+  countUser: Float!
   getAllBlogPosts(skip: Int! = 0, take: Int! = 25, title: String! = ""): [BlogPostEntity!]!
   getAllBlogs(skip: Int! = 0, take: Int! = 25, title: String! = ""): [BlogEntity!]!
   getAllUsers: [UserEntity!]!

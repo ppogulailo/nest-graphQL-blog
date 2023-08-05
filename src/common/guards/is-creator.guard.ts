@@ -5,6 +5,7 @@ import { Reflector } from '@nestjs/core';
 import { ServiceType } from '../decorators/services.decoratir';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Roles } from '../../users/user.entity';
+import {BlogService} from "../../blog/blog.service";
 
 @Injectable()
 export class IsCreatorGuard implements CanActivate {
@@ -12,6 +13,7 @@ export class IsCreatorGuard implements CanActivate {
     private reflector: Reflector,
     private userService: UserService,
     private blogPostService: BlogPostService,
+    private blogService:BlogService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -21,6 +23,7 @@ export class IsCreatorGuard implements CanActivate {
     const serviceMap = {
       userService: this.userService,
       blogPostService: this.blogPostService,
+      blogService: this.blogService,
     };
     const service = this.reflector.get<ServiceType>(
       'service',
