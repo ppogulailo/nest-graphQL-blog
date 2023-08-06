@@ -8,6 +8,7 @@ import {RolesGuard} from "../common/guards/roles.guard";
 import {User} from "../common/decorators/user.decorator";
 import {NEED_TO_BE_MODERATOR_OR_CREATOR} from "../common/const/global";
 import {FetchBlogInput} from "../blog/inputs/fetch-blog.input";
+import {IsPublic} from "../common/decorators/public.decorator";
 
 @Resolver('User')
 export class UserResolver {
@@ -32,17 +33,17 @@ export class UserResolver {
         }
         return await this.userService.removeById(id);
     }
-
+    @IsPublic()
     @Query(() => Number, {name: 'countUser'})
     async getCount(): Promise<number> {
         return this.userService.getCount()
     }
-
+    @IsPublic()
     @Query(() => UserEntity)
     async getOneUser(@Args('id',ParseIntPipe) id: number): Promise<UserEntity> {
         return await this.userService.findById(id);
     }
-
+    @IsPublic()
     @Query(() => [UserEntity])
     async getAllUsers(): Promise<UserEntity[]> {
         return await this.userService.findMany();

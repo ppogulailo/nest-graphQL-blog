@@ -8,6 +8,7 @@ import {FetchBlogInput} from './inputs/fetch-blog.input';
 import {User} from '../common/decorators/user.decorator';
 import {UserEntity} from '../users/user.entity';
 import {NEED_TO_BE_MODERATOR_OR_CREATOR} from "../common/const/global";
+import {IsPublic} from "../common/decorators/public.decorator";
 @Resolver('Blog')
 export class BlogResolver {
     constructor(private readonly blogService: BlogService) {
@@ -20,12 +21,12 @@ export class BlogResolver {
     ): Promise<BlogEntity> {
         return await this.blogService.create(createBlogInput, user.id);
     }
-
+    @IsPublic()
     @Query(() => Number, {name: 'countBLog'})
     async getCount(@Args() args: FetchBlogInput,): Promise<number> {
         return this.blogService.getCount(args.title)
     }
-
+    @IsPublic()
     @Query(() => [BlogEntity])
     async getAllBlogs(@Args() args: FetchBlogInput): Promise<BlogEntity[]> {
         return await this.blogService.findMany(args);
@@ -50,7 +51,7 @@ export class BlogResolver {
         }
         return await this.blogService.removeById(id);
     }
-
+    @IsPublic()
     @Query(() => BlogEntity)
     async getOneUser(@Args('id', ParseIntPipe) id: number): Promise<BlogEntity> {
         return await this.blogService.findById(id);

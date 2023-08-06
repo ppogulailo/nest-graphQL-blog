@@ -8,6 +8,7 @@ import {ForbiddenException, ParseIntPipe} from '@nestjs/common';
 import {FetchBlogPostInput} from './inputs/fetch-blog-post.input';
 import {User} from '../common/decorators/user.decorator';
 import {NEED_TO_BE_MODERATOR_OR_CREATOR} from "../common/const/global";
+import {IsPublic} from "../common/decorators/public.decorator";
 
 @Resolver('Blog-Post')
 export class BlogPostResolver {
@@ -21,12 +22,12 @@ export class BlogPostResolver {
     ): Promise<BlogPostEntity> {
         return await this.blogPostService.create(createBlogInput, user.id);
     }
-
+    @IsPublic()
     @Query(() => Number, {name: 'countBlogPost'})
     async getCount(@Args() args: FetchBlogPostInput): Promise<number> {
         return this.blogPostService.getCount(args.title)
     }
-
+    @IsPublic()
     @Query(() => [BlogPostEntity])
     async getAllBlogPosts(
         @Args() args: FetchBlogPostInput,
@@ -52,7 +53,7 @@ export class BlogPostResolver {
         }
         return await this.blogPostService.removeById(id);
     }
-
+    @IsPublic()
     @Query(() => BlogPostEntity)
     async getOneBlockPost(@Args('id', ParseIntPipe) id: number): Promise<BlogPostEntity> {
         return await this.blogPostService.findById(id);
