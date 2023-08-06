@@ -43,7 +43,7 @@ export class BlogService {
       where: {
         id: id,
       },
-      relations: ['user'],
+      relations: ['user','blogPost'],
     });
   }
 
@@ -56,7 +56,7 @@ export class BlogService {
       where: {
         name: Like(`%${title}%`),
       },
-      relations: ['user'],
+      relations: ['user','blogPost'],
       take: take,
       skip: skip,
     });
