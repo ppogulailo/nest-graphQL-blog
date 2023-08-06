@@ -56,6 +56,9 @@ export class BlogService {
       where: {
         name: Like(`%${title}%`),
       },
+      order: {
+        createdAt: 'asc'
+      },
       relations: ['user','blogPost'],
       take: take,
       skip: skip,

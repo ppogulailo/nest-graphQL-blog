@@ -26,6 +26,7 @@ export class BlogPostService {
         if (currentUser.role === Roles.Moderator) return true; // allow Moderator to get make requests
         return user.id === currentUser.id;
     }
+
     async getCount(title): Promise<number> {
         const count = await this.blogPostRepository.count({
             where: {
@@ -34,6 +35,7 @@ export class BlogPostService {
         })
         return count
     }
+
     async create(
         createBlogPostInput: CreateBlogPostInput,
         userId,
@@ -62,9 +64,12 @@ export class BlogPostService {
                        skip,
                        title,
                    }: FetchBlogPostInput): Promise<BlogPostEntity[]> {
-       return await this.blogPostRepository.find({
+        return await this.blogPostRepository.find({
             where: {
                 title: Like(`%${title}%`),
+            },
+            order: {
+                createdAt: 'asc'
             },
             relations: ['user', 'blog'],
             take: take,
