@@ -43,7 +43,7 @@ export class UserEntity {
   @Field(() => String, { description: 'refreshToken of the user' })
   refreshToken?: string;
   @Column({ default: Roles.Writer })
-  @Field(() => String, { description: 'email of the user' })
+  @Field(() => String, { description: 'role of the user' })
   role: Roles;
   @OneToMany(() => BlogEntity, (blog) => blog.user)
   @Field(() => [BlogEntity], { nullable: true })

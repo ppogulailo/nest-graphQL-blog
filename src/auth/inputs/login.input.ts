@@ -6,6 +6,7 @@ import {EMAIL_VALIDATION_MESSAGE} from "../../common/const/global";
 export class LoginInput {
     @Field()
     @IsEmail({},{message:EMAIL_VALIDATION_MESSAGE})
+    @IsNotEmpty()
     email: string;
     @Field()
     @IsNotEmpty()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Like, Repository} from 'typeorm';
+import { Repository} from 'typeorm';
 import { CreateUserInput } from './inputs /create-user.input';
 import { UpdateUserInput } from './inputs /update-user.input';
 import {Roles, UserEntity} from './user.entity';
