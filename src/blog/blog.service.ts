@@ -4,10 +4,8 @@ import {Repository, Like} from 'typeorm';
 import {BlogEntity} from './blog.entity';
 import {CreateBlogInput} from './inputs/create-blog.input';
 import {UpdateBlogInput} from './inputs/update-blog.input';
-import {UserService} from '../users/user.service';
 import {FetchBlogInput} from './inputs/fetch-blog.input';
 import {Roles, UserEntity} from "../users/user.entity";
-import {User} from "@apollo/server/src/plugin/schemaReporting/generated/operations";
 import {BLOG_ALREADY_EXIST} from "./constant/blog.constant";
 
 @Injectable()

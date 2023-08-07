@@ -33,7 +33,7 @@ export class UserService {
             where: {
                 id: id,
             },
-            relations: ['blogs', 'blogPost'],
+            relations: ['blog', 'blogPost'],
         });
     }
 
@@ -56,7 +56,7 @@ export class UserService {
 
     async findMany(): Promise<UserEntity[]> {
         return await this.userRepository.find({
-            relations: ['blogs', 'blogPost'], order: {
+            relations: ['blog', 'blogPost'], order: {
                 createdAt: 'asc'
             },
         });

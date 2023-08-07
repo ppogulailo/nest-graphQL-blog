@@ -91,7 +91,7 @@ describe('UserService', () => {
       const foundUser = await service.findById(user.id);
       expect(foundUser).toMatchObject(user);
       expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
-        relations: ['blogs', 'blogPost'],
+        relations: ['blog', 'blogPost'],
         where: { id: user.id },
       });
     });
