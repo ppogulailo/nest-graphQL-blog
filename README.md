@@ -18,15 +18,25 @@ Example .env file
 
 # POSTGRES
 TYPE_ORM_USERNAME="postgres"
+
 TYPE_ORM_PASS="root"
+
 TYPE_ORM_DATABASE="postgres"
+
 TYPE_ORM_PORT=5432
+
 TYPE_ORM_HOST="postgres"
+
 JWT_SECRET=sqreqweq
+
 JWT_ACCESS_SECRET=JWT_ACCESS_SECRET
+
 JWT_REFRESH_SECRET=JWT_REFRESH_SECRET
+
 POSTGRES_PASSWORD=root
+
 PORT=3000 or your_port
+
 
 # AFTER INSTALL .ENV
 After installing .env, run docker-compose build -> docker-compose up
