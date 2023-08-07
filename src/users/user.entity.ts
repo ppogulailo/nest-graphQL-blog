@@ -47,7 +47,7 @@ export class UserEntity {
   role: Roles;
   @OneToMany(() => BlogEntity, (blog) => blog.user)
   @Field(() => [BlogEntity], { nullable: true })
-  blogs?: BlogEntity[];
+  blog?: BlogEntity[];
   @OneToMany(() => BlogPostEntity, (blogPost) => blogPost.user)
   @Field(() => [BlogPostEntity], { nullable: true })
   blogPost?: BlogPostEntity[];
