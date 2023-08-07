@@ -3,18 +3,18 @@ import {IsNumber, IsOptional, IsString, Max, Min} from "class-validator";
 
 @ArgsType()
 export class FetchBlogInput {
-  @Field(() => Int)
+  @Field(() => Int,{nullable:true})
   @Min(0)
   @IsOptional()
   @IsNumber()
   skip? = 0;
-  @Field(() => Int)
+  @Field(() => Int,{nullable:true})
   @Min(1)
   @Max(50)
   @IsOptional()
   @IsNumber()
   take? = 25;
-  @Field(() => String)
+  @Field(() => String,{nullable:true})
   @IsOptional()
   @IsString()
   title? = '';

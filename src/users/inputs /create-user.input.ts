@@ -19,7 +19,7 @@ export class CreateUserInput {
   @Field()
   @IsNotEmpty()
   password: string;
-  @Field()
+  @Field({nullable:true})
   @IsOptional()
   @IsEnum(Roles)
   role?: Roles;

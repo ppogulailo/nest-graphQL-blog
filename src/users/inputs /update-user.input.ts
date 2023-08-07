@@ -4,7 +4,7 @@ import {EMAIL_VALIDATION_MESSAGE} from "../../common/const/global";
 
 @InputType()
 export class UpdateUserInput {
-  @Field(() => ID)
+  @Field(() => ID,{nullable:true})
   @IsNumber()
   id: number;
 
