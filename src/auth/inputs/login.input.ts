@@ -1,4 +1,4 @@
-import {IsEmail, IsNotEmpty, IsString, MinLength} from 'class-validator';
+import {IsEmail, IsNotEmpty } from 'class-validator';
 import {Field, InputType} from "@nestjs/graphql";
 import {EMAIL_VALIDATION_MESSAGE} from "../../common/const/global";
 

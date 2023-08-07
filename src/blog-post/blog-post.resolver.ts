@@ -20,7 +20,7 @@ export class BlogPostResolver {
         @Args('createBlogPost') createBlogInput: CreateBlogPostInput,
         @User() user: UserEntity,
     ): Promise<BlogPostEntity> {
-        return await this.blogPostService.create(createBlogInput, user.id);
+        return await this.blogPostService.create(createBlogInput, user);
     }
     @IsPublic()
     @Query(() => Number, {name: 'countBlogPost'})

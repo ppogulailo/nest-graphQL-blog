@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Like, Repository} from 'typeorm';
 import {BlogPostEntity} from './blog-post.entity';
@@ -7,9 +7,8 @@ import {UpdateBlogPostInput} from './inputs/update-blog-post.input';
 import {UserService} from '../users/user.service';
 import {BlogService} from '../blog/blog.service';
 import {FetchBlogPostInput} from './inputs/fetch-blog-post.input';
-import {Roles} from "../users/user.entity";
-import {User} from "@apollo/server/src/plugin/schemaReporting/generated/operations";
-import {BlogEntity} from "../blog/blog.entity";
+import {Roles, UserEntity} from "../users/user.entity";
+import {BLOG_POST_ALREADY_EXIST} from "./constant/blog-post.constant";
 
 @Injectable()
 export class BlogPostService {
@@ -38,9 +37,16 @@ export class BlogPostService {
 
     async create(
         createBlogPostInput: CreateBlogPostInput,
-        userId,
+        user: UserEntity,
     ): Promise<BlogPostEntity> {
-        const user = await this.userService.findById(userId);
+        const existBlogPost = await this.blogPostRepository.findOne({
+            where: {
+                title: createBlogPostInput.title
+            }
+        })
+        if (existBlogPost) {
+            throw new HttpException(BLOG_POST_ALREADY_EXIST, HttpStatus.CONFLICT)
+        }
         const blog = await this.blogService.findById(createBlogPostInput.blogId);
         const blogPost = this.blogPostRepository.create({
             ...createBlogPostInput,

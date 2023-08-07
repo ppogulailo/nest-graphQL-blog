@@ -1,8 +1,6 @@
 import { AuthService } from '../auth/auth.service';
 import {
   Args,
-  Context,
-  GraphQLExecutionContext,
   Mutation,
   Resolver,
 } from '@nestjs/graphql';

@@ -97,7 +97,7 @@ describe('BlogPostService', () => {
         blog: blog,
       };
       blogPostRepositoryMock.save.mockReturnValue(createdBlogPost);
-      const newBlog = await blogServicePost.create(createBlogInput, user.id);
+      const newBlog = await blogServicePost.create(createBlogInput, user);
       expect(newBlog).toMatchObject(createdBlogPost);
     });
   });

@@ -7,7 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { UserService } from 'src/users/user.service';
 import { AuthService } from '../../auth/auth.service';
-import { USER_NOT_AUTHORIZE } from '../../auth/const/auth.const';
+import { USER_NOT_AUTHORIZE } from '../../auth/constant/auth.constant';
 
 @Injectable()
 export class CustomAuthGuard extends AuthGuard('jwt') {

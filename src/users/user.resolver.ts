@@ -1,13 +1,10 @@
 import {Args, Mutation, Query, Resolver} from '@nestjs/graphql';
 import {UpdateUserInput} from './inputs /update-user.input';
-import {Roles, UserEntity} from './user.entity';
+import { UserEntity} from './user.entity';
 import {UserService} from './user.service';
-import {ForbiddenException, ParseIntPipe, UseGuards} from "@nestjs/common";
-import {HasRoles} from "../common/decorators/roles.decorator";
-import {RolesGuard} from "../common/guards/roles.guard";
+import {ForbiddenException, ParseIntPipe} from "@nestjs/common";
 import {User} from "../common/decorators/user.decorator";
 import {NEED_TO_BE_MODERATOR_OR_CREATOR} from "../common/const/global";
-import {FetchBlogInput} from "../blog/inputs/fetch-blog.input";
 import {IsPublic} from "../common/decorators/public.decorator";
 
 @Resolver('User')

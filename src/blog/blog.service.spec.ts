@@ -72,7 +72,7 @@ describe('BlogService', () => {
         user: user,
       };
       blogRepositoryMock.save.mockReturnValue(createdBlog);
-      const newBlog = await blogService.create(createBlogInput, user.id);
+      const newBlog = await blogService.create(createBlogInput, user);
       expect(newBlog).toMatchObject(createdBlog);
     });
   });
@@ -133,7 +133,7 @@ describe('BlogService', () => {
       const foundBlog = await blogService.findById(blog.id);
       expect(foundBlog).toMatchObject(blog);
       expect(blogRepositoryMock.findOne).toHaveBeenCalledWith({
-        relations: ['user'],
+        relations: ['user','blogPost'],
         where: { id: blog.id },
       });
     });

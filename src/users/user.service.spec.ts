@@ -84,11 +84,14 @@ describe('UserService', () => {
         role: Roles.Moderator,
         createdAt: new Date(),
         updatedAt: new Date(),
+        blogs:[],
+        blogPost:[]
       };
       userRepositoryMock.findOne.mockReturnValue(user);
       const foundUser = await service.findById(user.id);
       expect(foundUser).toMatchObject(user);
       expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
+        relations: ['blogs', 'blogPost'],
         where: { id: user.id },
       });
     });

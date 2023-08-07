@@ -10,7 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoginInput } from './inputs/login.input';
 import { CreateUserInput } from '../users/inputs /create-user.input';
 import { LoginResponse, RefreshResponse } from './response/login.response';
-import { ACCESS_DENIED } from './const/auth.const';
+import {ACCESS_DENIED, USER_ALREADY_EXIST, USER_NOT_FOUND, WRONG_PASS} from './constant/auth.constant';
 import { UserService } from '../users/user.service';
 import { UserEntity } from '../users/user.entity';
 
@@ -25,7 +25,7 @@ export class AuthService {
   async signUp(userData: CreateUserInput): Promise<LoginResponse> {
     const userExists = await this.usersService.findByEmail(userData.email);
     if (userExists) {
-      throw new BadRequestException('User is already exist!');
+      throw new BadRequestException(USER_ALREADY_EXIST);
     }
 
     // Hash password
@@ -50,11 +50,11 @@ export class AuthService {
     // Check if user exists
     const user = await this.usersService.findByEmail(data.email);
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException(USER_NOT_FOUND);
     }
     const passwordMatches = await argon2.verify(user.password, data.password);
     if (!passwordMatches) {
-      throw new UnauthorizedException('password is wrong!');
+      throw new UnauthorizedException(WRONG_PASS);
     }
     const { accessToken, refreshToken } = await this.getTokens(
       user.id,

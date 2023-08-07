@@ -1,0 +1,1 @@
+export const BLOG_POST_ALREADY_EXIST="BlogPost with this title already exist!"

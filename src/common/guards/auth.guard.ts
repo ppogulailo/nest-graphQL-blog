@@ -6,7 +6,7 @@ import {
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
-import { USER_NOT_AUTHORIZE } from '../../auth/const/auth.const';
+import { USER_NOT_AUTHORIZE } from '../../auth/constant/auth.constant';
 import { AuthService } from '../../auth/auth.service';
 import { UserService } from '../../users/user.service';
 

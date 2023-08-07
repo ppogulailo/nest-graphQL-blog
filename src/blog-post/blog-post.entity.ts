@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { UserEntity } from '../users/user.entity';
 import { BlogEntity } from "../blog/blog.entity";
 
@@ -22,7 +22,7 @@ export class BlogPostEntity {
   @Field()
   @UpdateDateColumn()
   updatedAt: Date;
-  @Column()
+  @Column({unique:true})
   @Field(() => String, { description: 'title of the blog-post' })
   title: string;
   @Column()

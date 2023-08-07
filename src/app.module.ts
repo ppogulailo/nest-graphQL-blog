@@ -11,7 +11,6 @@ import { BlogModule } from './blog/blog.module';
 import { BlogPostModule } from './blog-post/blog-post.module';
 import { APP_GUARD } from '@nestjs/core';
 import { graphqlContextGetToken } from './common/guards/auth.guard';
-import { UserService } from "./users/user.service";
 
 @Module({
   imports: [
@@ -28,13 +27,13 @@ import { UserService } from "./users/user.service";
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
+      useFactory: async (configService: ConfigService) => ({
         type: 'postgres',
-        host: process.env.TYPE_ORM_HOST,
+        host: configService.get('TYPE_ORM_HOST'),
         port: 5432,
-        username: process.env.TYPE_ORM_USERNAME,
-        password: process.env.TYPE_ORM_PASS,
-        database: process.env.TYPE_ORM_DATABASE,
+        username: configService.get('TYPE_ORM_USERNAME'),
+        password: configService.get('TYPE_ORM_PASS'),
+        database: configService.get('TYPE_ORM_DATABASE'),
         entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
         autoLoadEntities: true,
         synchronize: true,

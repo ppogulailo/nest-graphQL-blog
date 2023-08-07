@@ -1,11 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from '../auth/auth.service';
-import { CreateUserInput } from '../users/inputs /create-user.input';
 import { Roles, UserEntity } from '../users/user.entity';
 import { LoginResponse } from './response/login.response';
-import { Field, GqlExecutionContext } from '@nestjs/graphql';
-import { ExecutionContext } from '@nestjs/common';
 import { UserService } from '../users/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
