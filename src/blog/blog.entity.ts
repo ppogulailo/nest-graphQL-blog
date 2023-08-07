@@ -26,7 +26,7 @@ export class BlogEntity {
   @Column({unique:true})
   @Field(() => String, { description: 'name of the blog' })
   name: string;
-  @ManyToOne(() => UserEntity, (user) => user.blogs, { cascade: true })
+  @ManyToOne(() => UserEntity, (user) => user.blog, { cascade: true })
   @Field(() => UserEntity)
   user: UserEntity;
   @OneToMany(() => BlogPostEntity, (blogPost) => blogPost.blog)
