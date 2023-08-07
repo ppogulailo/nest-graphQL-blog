@@ -40,3 +40,9 @@ PORT=3000 or your_port
 
 # AFTER INSTALL .ENV
 After installing .env, run docker-compose build -> docker-compose up
+
+
+
+note that to create a user with a different role, you just need to pass the role when creating\
+
+
